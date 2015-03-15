@@ -1,0 +1,9 @@
+C:\Users\Ana\Documents\Visual Studio 2012\Projects\A1b\bin\Debug\A1b.exe.config
+C:\Users\Ana\Documents\Visual Studio 2012\Projects\A1b\bin\Debug\A1b.exe
+C:\Users\Ana\Documents\Visual Studio 2012\Projects\A1b\bin\Debug\A1b.pdb
+C:\Users\Ana\Documents\Visual Studio 2012\Projects\A1b\obj\Debug\A1b.csprojResolveAssemblyReference.cache
+C:\Users\Ana\Documents\Visual Studio 2012\Projects\A1b\obj\Debug\A1b.Form1.resources
+C:\Users\Ana\Documents\Visual Studio 2012\Projects\A1b\obj\Debug\A1b.Properties.Resources.resources
+C:\Users\Ana\Documents\Visual Studio 2012\Projects\A1b\obj\Debug\A1b.csproj.GenerateResource.Cache
+C:\Users\Ana\Documents\Visual Studio 2012\Projects\A1b\obj\Debug\A1b.exe
+C:\Users\Ana\Documents\Visual Studio 2012\Projects\A1b\obj\Debug\A1b.pdb

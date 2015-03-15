@@ -1,0 +1,9 @@
+C:\Users\Ana\Documents\Visual Studio 2012\Projects\A2a\bin\Debug\A2a.exe.config
+C:\Users\Ana\Documents\Visual Studio 2012\Projects\A2a\bin\Debug\A2a.exe
+C:\Users\Ana\Documents\Visual Studio 2012\Projects\A2a\bin\Debug\A2a.pdb
+C:\Users\Ana\Documents\Visual Studio 2012\Projects\A2a\obj\Debug\A2a.csprojResolveAssemblyReference.cache
+C:\Users\Ana\Documents\Visual Studio 2012\Projects\A2a\obj\Debug\A2a.Properties.Resources.resources
+C:\Users\Ana\Documents\Visual Studio 2012\Projects\A2a\obj\Debug\A2a.csproj.GenerateResource.Cache
+C:\Users\Ana\Documents\Visual Studio 2012\Projects\A2a\obj\Debug\A2a.exe
+C:\Users\Ana\Documents\Visual Studio 2012\Projects\A2a\obj\Debug\A2a.pdb
+C:\Users\Ana\Documents\Visual Studio 2012\Projects\A2a\obj\Debug\A2a.Form1.resources

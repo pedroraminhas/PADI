@@ -1,0 +1,10 @@
+C:\Users\Ana\Documents\Visual Studio 2012\Projects\HelloWorld\HelloWorld\bin\Debug\HelloWorld.exe.config
+C:\Users\Ana\Documents\Visual Studio 2012\Projects\HelloWorld\HelloWorld\bin\Debug\HelloWorld.exe
+C:\Users\Ana\Documents\Visual Studio 2012\Projects\HelloWorld\HelloWorld\bin\Debug\HelloWorld.pdb
+C:\Users\Ana\Documents\Visual Studio 2012\Projects\HelloWorld\HelloWorld\obj\Debug\HelloWorld.exe
+C:\Users\Ana\Documents\Visual Studio 2012\Projects\HelloWorld\HelloWorld\obj\Debug\HelloWorld.pdb
+C:\Users\Ana\Documents\Visual Studio 2012\Projects\Lab 1\A1a\HelloWorld\bin\Debug\HelloWorld.exe.config
+C:\Users\Ana\Documents\Visual Studio 2012\Projects\Lab 1\A1a\HelloWorld\obj\Debug\HelloWorld.exe
+C:\Users\Ana\Documents\Visual Studio 2012\Projects\Lab 1\A1a\HelloWorld\obj\Debug\HelloWorld.pdb
+C:\Users\Ana\Documents\Visual Studio 2012\Projects\Lab 1\A1a\HelloWorld\bin\Debug\HelloWorld.exe
+C:\Users\Ana\Documents\Visual Studio 2012\Projects\Lab 1\A1a\HelloWorld\bin\Debug\HelloWorld.pdb
