@@ -1,0 +1,7 @@
+C:\Users\Pedro Raminhas\Documents\Universidade\PADI\Laboratorios\Lab 3\Client\bin\Debug\Client.exe
+C:\Users\Pedro Raminhas\Documents\Universidade\PADI\Laboratorios\Lab 3\Client\bin\Debug\Client.pdb
+C:\Users\Pedro Raminhas\Documents\Universidade\PADI\Laboratorios\Lab 3\Client\bin\Debug\CommonTypes.dll
+C:\Users\Pedro Raminhas\Documents\Universidade\PADI\Laboratorios\Lab 3\Client\bin\Debug\CommonTypes.pdb
+C:\Users\Pedro Raminhas\Documents\Universidade\PADI\Laboratorios\Lab 3\Client\obj\Debug\Client.csprojResolveAssemblyReference.cache
+C:\Users\Pedro Raminhas\Documents\Universidade\PADI\Laboratorios\Lab 3\Client\obj\Debug\Client.exe
+C:\Users\Pedro Raminhas\Documents\Universidade\PADI\Laboratorios\Lab 3\Client\obj\Debug\Client.pdb

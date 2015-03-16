@@ -4,3 +4,6 @@ C:\Users\Ana\Documents\Visual Studio 2012\Projects\C\C\bin\Debug\C.pdb
 C:\Users\Ana\Documents\Visual Studio 2012\Projects\C\C\obj\Debug\C.csprojResolveAssemblyReference.cache
 C:\Users\Ana\Documents\Visual Studio 2012\Projects\C\C\obj\Debug\C.exe
 C:\Users\Ana\Documents\Visual Studio 2012\Projects\C\C\obj\Debug\C.pdb
+C:\Users\Pedro Raminhas\Documents\GitHub\PADI\Lab 2\C\C\bin\Debug\C.exe.config
+C:\Users\Pedro Raminhas\Documents\GitHub\PADI\Lab 2\C\C\obj\Debug\C.exe
+C:\Users\Pedro Raminhas\Documents\GitHub\PADI\Lab 2\C\C\obj\Debug\C.pdb
