@@ -1,0 +1,6 @@
+C:\Users\Ana\Downloads\AsynchCalcPi\bin\Debug\AsynchCalcPi.exe
+C:\Users\Ana\Downloads\AsynchCalcPi\bin\Debug\AsynchCalcPi.pdb
+C:\Users\Ana\Downloads\AsynchCalcPi\obj\Debug\AsynchCalcPi.Form1.resources
+C:\Users\Ana\Downloads\AsynchCalcPi\obj\Debug\AsynchCalcPi.csproj.GenerateResource.Cache
+C:\Users\Ana\Downloads\AsynchCalcPi\obj\Debug\AsynchCalcPi.exe
+C:\Users\Ana\Downloads\AsynchCalcPi\obj\Debug\AsynchCalcPi.pdb
