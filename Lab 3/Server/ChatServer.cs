@@ -27,6 +27,7 @@ namespace RemotingSample
             System.Console.WriteLine("Comandos:");
             System.Console.WriteLine("1- Registar Cliente");
             System.Console.WriteLine("2- Enviar Mensagem");
+            obj.AddUser("server");
 
             while (true)
             {
@@ -41,8 +42,7 @@ namespace RemotingSample
                     case "2":
                         Console.WriteLine("Escreva a  mensagem");
                         String message = System.Console.ReadLine();
-                        obj.SendMessage(message);
-                        obj.existMessage = true;
+                        obj.SendMessage("server",message);
                         break;
                     default:
                         Console.WriteLine("Opação Inválida");
