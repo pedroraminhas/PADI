@@ -7,8 +7,11 @@ namespace RemotingSample
     public class MyRemoteObject : MarshalByRefObject
     {
 
+        static public ArrayList messages = new ArrayList();
+        static public ArrayList senders = new ArrayList();
         static private ArrayList users = new ArrayList();
-        Dictionary<string, string> messages =   new Dictionary<string, string>();
+
+      //  Dictionary<string, string> messages =   new Dictionary<string, string>();
 
 
 
@@ -22,22 +25,19 @@ namespace RemotingSample
 
             if (users.Contains(clientName))
             {
-                messages.Add(clientName,message);
+                messages.Add(message);
+                senders.Add(clientName);
             }
             else
                 Console.WriteLine("Não está autenticado no sistema");
         }
 
-        public int returnChat(int line)
+        public ArrayList getMessages() {
+            return messages;
+        }
+        public ArrayList getSenders()
         {
-            int i = 0;
-            foreach (var key in messages.Keys)
-            {
-                if (i > line)
-
-                    Console.WriteLine(key, ":", messages[key]);
-            }
-            return line;
+            return senders;
         }
     }
 }
