@@ -1,0 +1,14 @@
+C:\Users\Pedro Raminhas\Downloads\RemotingSample (1)\Server\bin\Debug\Server.exe
+C:\Users\Pedro Raminhas\Downloads\RemotingSample (1)\Server\bin\Debug\Server.pdb
+C:\Users\Pedro Raminhas\Downloads\RemotingSample (1)\Server\bin\Debug\CommonTypes.dll
+C:\Users\Pedro Raminhas\Downloads\RemotingSample (1)\Server\bin\Debug\CommonTypes.pdb
+C:\Users\Pedro Raminhas\Downloads\RemotingSample (1)\Server\obj\Debug\Server.csprojResolveAssemblyReference.cache
+C:\Users\Pedro Raminhas\Downloads\RemotingSample (1)\Server\obj\Debug\Server.exe
+C:\Users\Pedro Raminhas\Downloads\RemotingSample (1)\Server\obj\Debug\Server.pdb
+C:\Users\Pedro Raminhas\Documents\GitHub\PADI\Projecto\PADIMapNoReduce\Server\obj\Debug\Server.exe
+C:\Users\Pedro Raminhas\Documents\GitHub\PADI\Projecto\PADIMapNoReduce\Server\obj\Debug\Server.pdb
+C:\Users\Pedro Raminhas\Documents\GitHub\PADI\Projecto\PADIMapNoReduce\Server\bin\Debug\Server.exe
+C:\Users\Pedro Raminhas\Documents\GitHub\PADI\Projecto\PADIMapNoReduce\Server\bin\Debug\Server.pdb
+C:\Users\Pedro Raminhas\Documents\GitHub\PADI\Projecto\PADIMapNoReduce\Server\bin\Debug\CommonTypes.dll
+C:\Users\Pedro Raminhas\Documents\GitHub\PADI\Projecto\PADIMapNoReduce\Server\bin\Debug\CommonTypes.pdb
+C:\Users\Pedro Raminhas\Documents\GitHub\PADI\Projecto\PADIMapNoReduce\Server\obj\Debug\Server.csprojResolveAssemblyReference.cache
