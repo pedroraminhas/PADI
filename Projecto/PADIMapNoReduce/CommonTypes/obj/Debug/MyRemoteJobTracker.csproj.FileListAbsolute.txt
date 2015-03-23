@@ -1,5 +1,0 @@
-C:\Users\Pedro Raminhas\Documents\GitHub\PADI\Projecto\PADIMapNoReduce\CommonTypes\obj\Debug\MyRemoteJobTracker.csprojResolveAssemblyReference.cache
-C:\Users\Pedro Raminhas\Documents\GitHub\PADI\Projecto\PADIMapNoReduce\CommonTypes\obj\Debug\CommonTypes.dll
-C:\Users\Pedro Raminhas\Documents\GitHub\PADI\Projecto\PADIMapNoReduce\CommonTypes\obj\Debug\CommonTypes.pdb
-C:\Users\Pedro Raminhas\Documents\GitHub\PADI\Projecto\PADIMapNoReduce\CommonTypes\bin\Debug\CommonTypes.dll
-C:\Users\Pedro Raminhas\Documents\GitHub\PADI\Projecto\PADIMapNoReduce\CommonTypes\bin\Debug\CommonTypes.pdb
