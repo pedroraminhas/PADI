@@ -1,0 +1,4 @@
+C:\Users\Ana\Documents\GitHub\PADI\Projecto\Client\bin\Release\Client.exe
+C:\Users\Ana\Documents\GitHub\PADI\Projecto\Client\bin\Release\CommonTypes.dll
+C:\Users\Ana\Documents\GitHub\PADI\Projecto\Client\obj\Release\Client.csprojResolveAssemblyReference.cache
+C:\Users\Ana\Documents\GitHub\PADI\Projecto\Client\obj\Release\Client.exe

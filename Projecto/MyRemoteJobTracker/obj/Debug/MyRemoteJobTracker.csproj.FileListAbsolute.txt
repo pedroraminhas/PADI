@@ -1,0 +1,4 @@
+C:\Users\Ana\Documents\GitHub\PADI\Projecto\MyRemoteJobTracker\bin\Debug\CommonTypes.dll
+C:\Users\Ana\Documents\GitHub\PADI\Projecto\MyRemoteJobTracker\bin\Debug\CommonTypes.pdb
+C:\Users\Ana\Documents\GitHub\PADI\Projecto\MyRemoteJobTracker\obj\Debug\CommonTypes.dll
+C:\Users\Ana\Documents\GitHub\PADI\Projecto\MyRemoteJobTracker\obj\Debug\CommonTypes.pdb
