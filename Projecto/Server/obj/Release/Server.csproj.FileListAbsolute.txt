@@ -1,4 +1,0 @@
-C:\Users\Ana\Documents\GitHub\PADI\Projecto\Server\bin\Release\Server.exe
-C:\Users\Ana\Documents\GitHub\PADI\Projecto\Server\bin\Release\CommonTypes.dll
-C:\Users\Ana\Documents\GitHub\PADI\Projecto\Server\obj\Release\Server.csprojResolveAssemblyReference.cache
-C:\Users\Ana\Documents\GitHub\PADI\Projecto\Server\obj\Release\Server.exe

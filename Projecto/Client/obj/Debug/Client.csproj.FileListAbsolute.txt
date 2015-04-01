@@ -1,7 +1,0 @@
-C:\Users\Ana\Documents\GitHub\PADI\Projecto\Client\bin\Debug\Client.exe
-C:\Users\Ana\Documents\GitHub\PADI\Projecto\Client\bin\Debug\Client.pdb
-C:\Users\Ana\Documents\GitHub\PADI\Projecto\Client\bin\Debug\CommonTypes.dll
-C:\Users\Ana\Documents\GitHub\PADI\Projecto\Client\bin\Debug\CommonTypes.pdb
-C:\Users\Ana\Documents\GitHub\PADI\Projecto\Client\obj\Debug\Client.csprojResolveAssemblyReference.cache
-C:\Users\Ana\Documents\GitHub\PADI\Projecto\Client\obj\Debug\Client.exe
-C:\Users\Ana\Documents\GitHub\PADI\Projecto\Client\obj\Debug\Client.pdb
