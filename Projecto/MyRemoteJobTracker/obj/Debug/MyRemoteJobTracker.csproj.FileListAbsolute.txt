@@ -1,0 +1,9 @@
+C:\Users\Ana\Documents\GitHub\PADI\Projecto\MyRemoteJobTracker\bin\Debug\CommonTypes.dll
+C:\Users\Ana\Documents\GitHub\PADI\Projecto\MyRemoteJobTracker\bin\Debug\CommonTypes.pdb
+C:\Users\Ana\Documents\GitHub\PADI\Projecto\MyRemoteJobTracker\obj\Debug\CommonTypes.dll
+C:\Users\Ana\Documents\GitHub\PADI\Projecto\MyRemoteJobTracker\obj\Debug\CommonTypes.pdb
+C:\Users\Pedro Raminhas\Documents\GitHub\PADI\Projecto\MyRemoteJobTracker\bin\Debug\CommonTypes.dll
+C:\Users\Pedro Raminhas\Documents\GitHub\PADI\Projecto\MyRemoteJobTracker\bin\Debug\CommonTypes.pdb
+C:\Users\Pedro Raminhas\Documents\GitHub\PADI\Projecto\MyRemoteJobTracker\obj\Debug\MyRemoteJobTracker.csprojResolveAssemblyReference.cache
+C:\Users\Pedro Raminhas\Documents\GitHub\PADI\Projecto\MyRemoteJobTracker\obj\Debug\CommonTypes.dll
+C:\Users\Pedro Raminhas\Documents\GitHub\PADI\Projecto\MyRemoteJobTracker\obj\Debug\CommonTypes.pdb
