@@ -1,3 +1,0 @@
-C:\Users\Ana\Documents\GitHub\PADI\Projecto\MyRemoteJobTracker\bin\Release\CommonTypes.dll
-C:\Users\Ana\Documents\GitHub\PADI\Projecto\MyRemoteJobTracker\obj\Release\MyRemoteJobTracker.csprojResolveAssemblyReference.cache
-C:\Users\Ana\Documents\GitHub\PADI\Projecto\MyRemoteJobTracker\obj\Release\CommonTypes.dll

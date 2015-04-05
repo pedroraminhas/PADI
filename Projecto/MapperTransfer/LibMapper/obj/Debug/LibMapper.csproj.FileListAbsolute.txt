@@ -1,0 +1,7 @@
+C:\Users\Ana\Desktop\MapperTransfer\LibMapper\bin\Debug\LibMapper.dll
+C:\Users\Ana\Desktop\MapperTransfer\LibMapper\bin\Debug\LibMapper.pdb
+C:\Users\Ana\Desktop\MapperTransfer\LibMapper\bin\Debug\LibPADIMapNoReduce.dll
+C:\Users\Ana\Desktop\MapperTransfer\LibMapper\bin\Debug\LibPADIMapNoReduce.pdb
+C:\Users\Ana\Desktop\MapperTransfer\LibMapper\obj\Debug\LibMapper.csprojResolveAssemblyReference.cache
+C:\Users\Ana\Desktop\MapperTransfer\LibMapper\obj\Debug\LibMapper.dll
+C:\Users\Ana\Desktop\MapperTransfer\LibMapper\obj\Debug\LibMapper.pdb
