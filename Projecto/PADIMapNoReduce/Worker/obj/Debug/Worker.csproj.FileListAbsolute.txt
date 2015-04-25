@@ -1,0 +1,54 @@
+C:\Users\Pedro Raminhas\Desktop\HOLY GRAIL 2\MapperTransfer\Worker\bin\Debug\Server.exe
+C:\Users\Pedro Raminhas\Desktop\HOLY GRAIL 2\MapperTransfer\Worker\bin\Debug\Server.pdb
+C:\Users\Pedro Raminhas\Desktop\HOLY GRAIL 2\MapperTransfer\Worker\bin\Debug\Client.exe
+C:\Users\Pedro Raminhas\Desktop\HOLY GRAIL 2\MapperTransfer\Worker\bin\Debug\LibPADIMapNoReduce.dll
+C:\Users\Pedro Raminhas\Desktop\HOLY GRAIL 2\MapperTransfer\Worker\bin\Debug\Client.pdb
+C:\Users\Pedro Raminhas\Desktop\HOLY GRAIL 2\MapperTransfer\Worker\bin\Debug\LibPADIMapNoReduce.pdb
+C:\Users\Pedro Raminhas\Desktop\HOLY GRAIL 2\MapperTransfer\Worker\obj\Debug\Worker.csprojResolveAssemblyReference.cache
+C:\Users\Pedro Raminhas\Desktop\HOLY GRAIL 2\MapperTransfer\Worker\obj\Debug\Server.exe
+C:\Users\Pedro Raminhas\Desktop\HOLY GRAIL 2\MapperTransfer\Worker\obj\Debug\Server.pdb
+C:\Users\Pedro Raminhas\Desktop\PADIMapNoReduce\Worker\bin\Debug\Server.exe
+C:\Users\Pedro Raminhas\Desktop\PADIMapNoReduce\Worker\bin\Debug\Server.pdb
+C:\Users\Pedro Raminhas\Desktop\PADIMapNoReduce\Worker\bin\Debug\Client.exe
+C:\Users\Pedro Raminhas\Desktop\PADIMapNoReduce\Worker\bin\Debug\LibPADIMapNoReduce.dll
+C:\Users\Pedro Raminhas\Desktop\PADIMapNoReduce\Worker\bin\Debug\LibPADIMapNoReduce.pdb
+C:\Users\Pedro Raminhas\Desktop\PADIMapNoReduce\Worker\obj\Debug\Worker.csprojResolveAssemblyReference.cache
+C:\Users\Pedro Raminhas\Desktop\PADIMapNoReduce\Worker\obj\Debug\Server.exe
+C:\Users\Pedro Raminhas\Desktop\PADIMapNoReduce\Worker\obj\Debug\Server.pdb
+C:\Users\Pedro Raminhas\Desktop\PADIMapNoReduce\Worker\bin\Debug\Client.pdb
+C:\Users\Ana\Desktop\abril08tarde\PADIMapNoReduce\Worker\bin\Debug\Server.exe
+C:\Users\Ana\Desktop\abril08tarde\PADIMapNoReduce\Worker\bin\Debug\Server.pdb
+C:\Users\Ana\Desktop\abril08tarde\PADIMapNoReduce\Worker\bin\Debug\Client.exe
+C:\Users\Ana\Desktop\abril08tarde\PADIMapNoReduce\Worker\bin\Debug\LibPADIMapNoReduce.dll
+C:\Users\Ana\Desktop\abril08tarde\PADIMapNoReduce\Worker\bin\Debug\Client.pdb
+C:\Users\Ana\Desktop\abril08tarde\PADIMapNoReduce\Worker\bin\Debug\LibPADIMapNoReduce.pdb
+C:\Users\Ana\Desktop\abril08tarde\PADIMapNoReduce\Worker\obj\Debug\Worker.csprojResolveAssemblyReference.cache
+C:\Users\Ana\Desktop\abril08tarde\PADIMapNoReduce\Worker\obj\Debug\Server.exe
+C:\Users\Ana\Desktop\abril08tarde\PADIMapNoReduce\Worker\obj\Debug\Server.pdb
+C:\Users\Ana\Desktop\abril08noite\PADIMapNoReduce\Worker\obj\Debug\Worker.csprojResolveAssemblyReference.cache
+C:\Users\Ana\Desktop\abril08noite\PADIMapNoReduce\Worker\obj\Debug\Server.exe
+C:\Users\Ana\Desktop\abril08noite\PADIMapNoReduce\Worker\obj\Debug\Server.pdb
+C:\Users\Ana\Desktop\abril08noite\PADIMapNoReduce\Worker\bin\Debug\Server.exe
+C:\Users\Ana\Desktop\abril08noite\PADIMapNoReduce\Worker\bin\Debug\Server.pdb
+C:\Users\Ana\Desktop\abril08noite\PADIMapNoReduce\Worker\bin\Debug\Client.exe
+C:\Users\Ana\Desktop\abril08noite\PADIMapNoReduce\Worker\bin\Debug\LibPADIMapNoReduce.dll
+C:\Users\Ana\Desktop\abril08noite\PADIMapNoReduce\Worker\bin\Debug\Client.pdb
+C:\Users\Ana\Desktop\abril08noite\PADIMapNoReduce\Worker\bin\Debug\LibPADIMapNoReduce.pdb
+C:\Users\Ana\Desktop\randomicalyspeaking\PADIMapNoReduce\Worker\bin\Debug\Server.exe
+C:\Users\Ana\Desktop\randomicalyspeaking\PADIMapNoReduce\Worker\bin\Debug\Server.pdb
+C:\Users\Ana\Desktop\randomicalyspeaking\PADIMapNoReduce\Worker\bin\Debug\Client.exe
+C:\Users\Ana\Desktop\randomicalyspeaking\PADIMapNoReduce\Worker\bin\Debug\LibPADIMapNoReduce.dll
+C:\Users\Ana\Desktop\randomicalyspeaking\PADIMapNoReduce\Worker\bin\Debug\Client.pdb
+C:\Users\Ana\Desktop\randomicalyspeaking\PADIMapNoReduce\Worker\bin\Debug\LibPADIMapNoReduce.pdb
+C:\Users\Ana\Desktop\randomicalyspeaking\PADIMapNoReduce\Worker\obj\Debug\Server.exe
+C:\Users\Ana\Desktop\randomicalyspeaking\PADIMapNoReduce\Worker\obj\Debug\Server.pdb
+C:\Users\Ana\Desktop\randomicalyspeaking\PADIMapNoReduce\Worker\obj\Debug\Worker.csprojResolveAssemblyReference.cache
+C:\Users\Pedro Raminhas\Desktop\randomicalyspeaking\PADIMapNoReduce\Worker\bin\Debug\Server.exe
+C:\Users\Pedro Raminhas\Desktop\randomicalyspeaking\PADIMapNoReduce\Worker\bin\Debug\Server.pdb
+C:\Users\Pedro Raminhas\Desktop\randomicalyspeaking\PADIMapNoReduce\Worker\bin\Debug\Client.exe
+C:\Users\Pedro Raminhas\Desktop\randomicalyspeaking\PADIMapNoReduce\Worker\bin\Debug\LibPADIMapNoReduce.dll
+C:\Users\Pedro Raminhas\Desktop\randomicalyspeaking\PADIMapNoReduce\Worker\bin\Debug\Client.pdb
+C:\Users\Pedro Raminhas\Desktop\randomicalyspeaking\PADIMapNoReduce\Worker\bin\Debug\LibPADIMapNoReduce.pdb
+C:\Users\Pedro Raminhas\Desktop\randomicalyspeaking\PADIMapNoReduce\Worker\obj\Debug\Worker.csprojResolveAssemblyReference.cache
+C:\Users\Pedro Raminhas\Desktop\randomicalyspeaking\PADIMapNoReduce\Worker\obj\Debug\Server.exe
+C:\Users\Pedro Raminhas\Desktop\randomicalyspeaking\PADIMapNoReduce\Worker\obj\Debug\Server.pdb

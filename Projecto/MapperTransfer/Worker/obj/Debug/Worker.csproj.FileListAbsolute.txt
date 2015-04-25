@@ -1,9 +1,0 @@
-C:\Users\Ana\Desktop\MapperTransfer\Worker\bin\Debug\Server.exe
-C:\Users\Ana\Desktop\MapperTransfer\Worker\bin\Debug\Server.pdb
-C:\Users\Ana\Desktop\MapperTransfer\Worker\bin\Debug\LibPADIMapNoReduce.dll
-C:\Users\Ana\Desktop\MapperTransfer\Worker\bin\Debug\LibPADIMapNoReduce.pdb
-C:\Users\Ana\Desktop\MapperTransfer\Worker\obj\Debug\Worker.csprojResolveAssemblyReference.cache
-C:\Users\Ana\Desktop\MapperTransfer\Worker\obj\Debug\Server.exe
-C:\Users\Ana\Desktop\MapperTransfer\Worker\obj\Debug\Server.pdb
-C:\Users\Ana\Desktop\MapperTransfer\Worker\bin\Debug\Client.exe
-C:\Users\Ana\Desktop\MapperTransfer\Worker\bin\Debug\Client.pdb

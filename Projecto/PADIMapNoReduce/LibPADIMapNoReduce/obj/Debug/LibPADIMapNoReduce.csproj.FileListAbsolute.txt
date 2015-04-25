@@ -1,0 +1,23 @@
+C:\Users\Pedro Raminhas\Desktop\HOLY GRAIL 2\MapperTransfer\LibPADIMapNoReduce\bin\Debug\LibPADIMapNoReduce.dll
+C:\Users\Pedro Raminhas\Desktop\HOLY GRAIL 2\MapperTransfer\LibPADIMapNoReduce\bin\Debug\LibPADIMapNoReduce.pdb
+C:\Users\Pedro Raminhas\Desktop\HOLY GRAIL 2\MapperTransfer\LibPADIMapNoReduce\obj\Debug\LibPADIMapNoReduce.csprojResolveAssemblyReference.cache
+C:\Users\Pedro Raminhas\Desktop\HOLY GRAIL 2\MapperTransfer\LibPADIMapNoReduce\obj\Debug\LibPADIMapNoReduce.dll
+C:\Users\Pedro Raminhas\Desktop\HOLY GRAIL 2\MapperTransfer\LibPADIMapNoReduce\obj\Debug\LibPADIMapNoReduce.pdb
+C:\Users\Pedro Raminhas\Desktop\PADIMapNoReduce\LibPADIMapNoReduce\bin\Debug\LibPADIMapNoReduce.dll
+C:\Users\Pedro Raminhas\Desktop\PADIMapNoReduce\LibPADIMapNoReduce\bin\Debug\LibPADIMapNoReduce.pdb
+C:\Users\Pedro Raminhas\Desktop\PADIMapNoReduce\LibPADIMapNoReduce\obj\Debug\LibPADIMapNoReduce.dll
+C:\Users\Pedro Raminhas\Desktop\PADIMapNoReduce\LibPADIMapNoReduce\obj\Debug\LibPADIMapNoReduce.pdb
+C:\Users\Ana\Desktop\abril08tarde\PADIMapNoReduce\LibPADIMapNoReduce\bin\Debug\LibPADIMapNoReduce.dll
+C:\Users\Ana\Desktop\abril08tarde\PADIMapNoReduce\LibPADIMapNoReduce\bin\Debug\LibPADIMapNoReduce.pdb
+C:\Users\Ana\Desktop\abril08tarde\PADIMapNoReduce\LibPADIMapNoReduce\obj\Debug\LibPADIMapNoReduce.dll
+C:\Users\Ana\Desktop\abril08tarde\PADIMapNoReduce\LibPADIMapNoReduce\obj\Debug\LibPADIMapNoReduce.pdb
+C:\Users\Ana\Desktop\abril08noite\PADIMapNoReduce\LibPADIMapNoReduce\bin\Debug\LibPADIMapNoReduce.dll
+C:\Users\Ana\Desktop\abril08noite\PADIMapNoReduce\LibPADIMapNoReduce\bin\Debug\LibPADIMapNoReduce.pdb
+C:\Users\Ana\Desktop\abril08noite\PADIMapNoReduce\LibPADIMapNoReduce\obj\Debug\LibPADIMapNoReduce.dll
+C:\Users\Ana\Desktop\abril08noite\PADIMapNoReduce\LibPADIMapNoReduce\obj\Debug\LibPADIMapNoReduce.pdb
+C:\Users\Pedro Raminhas\Desktop\PADIMapNoReduce\LibPADIMapNoReduce\obj\Debug\LibPADIMapNoReduce.csprojResolveAssemblyReference.cache
+C:\Users\Ana\Desktop\randomicalyspeaking\PADIMapNoReduce\LibPADIMapNoReduce\bin\Debug\LibPADIMapNoReduce.dll
+C:\Users\Ana\Desktop\randomicalyspeaking\PADIMapNoReduce\LibPADIMapNoReduce\bin\Debug\LibPADIMapNoReduce.pdb
+C:\Users\Ana\Desktop\randomicalyspeaking\PADIMapNoReduce\LibPADIMapNoReduce\obj\Debug\LibPADIMapNoReduce.csprojResolveAssemblyReference.cache
+C:\Users\Ana\Desktop\randomicalyspeaking\PADIMapNoReduce\LibPADIMapNoReduce\obj\Debug\LibPADIMapNoReduce.dll
+C:\Users\Ana\Desktop\randomicalyspeaking\PADIMapNoReduce\LibPADIMapNoReduce\obj\Debug\LibPADIMapNoReduce.pdb

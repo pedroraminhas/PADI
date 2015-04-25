@@ -1,0 +1,4 @@
+WORKER 1 tcp://localhost:20001/PM tcp://localhost:30001/W
+%
+WORKER 2 tcp://localhost:20001/PM tcp://localhost:30002/W tcp://localhost:30001/W
+SUBMIT tcp://localhost:30001/W ..\..\..\Input\test.txt ..\..\..\Output\ 3 Mapper ..\..\..\LibMapper\bin\Debug\LibMapper.dll

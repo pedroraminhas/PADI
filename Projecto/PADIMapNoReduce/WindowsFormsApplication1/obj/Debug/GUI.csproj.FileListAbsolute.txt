@@ -1,0 +1,4 @@
+C:\Users\Pedro Raminhas\Desktop\PADIMapNoReduce\WindowsFormsApplication1\obj\Debug\GUI.csprojResolveAssemblyReference.cache
+C:\Users\Pedro Raminhas\Desktop\PADIMapNoReduce\WindowsFormsApplication1\obj\Debug\PADIMapNoReduce.Form1.resources
+C:\Users\Pedro Raminhas\Desktop\PADIMapNoReduce\WindowsFormsApplication1\obj\Debug\WindowsFormsApplication1.Properties.Resources.resources
+C:\Users\Pedro Raminhas\Desktop\PADIMapNoReduce\WindowsFormsApplication1\obj\Debug\GUI.csproj.GenerateResource.Cache
