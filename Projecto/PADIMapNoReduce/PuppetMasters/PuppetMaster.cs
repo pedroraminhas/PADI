@@ -78,17 +78,7 @@ namespace PADIMapNoReduce
             }
         }
 
-        public static void parseScript(string inputPath)
-        {
-            string line;
-            System.IO.StreamReader file = new System.IO.StreamReader(inputPath);
-
-            while ((line = file.ReadLine()) != null)
-            {
-                if (!line[0].Equals('%'))
-                    splitInstruction(line);
-            }
-        }
+        
         /* If the PuppetMaster URL in the instruction is this PuppetMasters's URL, creates the worker;
          * Else, does a remote call to the wanted PuppetMaster URL so it creates the worker. */
         public static void startWorker(string[] workerInfo)

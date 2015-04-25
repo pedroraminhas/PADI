@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Collections;
 
 namespace PADIMapNoReduce
 {
@@ -14,65 +15,110 @@ namespace PADIMapNoReduce
     {
         private string inputPath;
         private string instruction;
-        //int workerID;
+        private string nextInstruction;
+        private static ArrayList instructions;
+        private int index;
+        private String errorNoScript = "Please load a script first!";
+        private String errorNoInstruction = "Please insert an instruction first!";
+        private static String errorNoPath = "Please choose a script first!";
+
         public GUI()
         {
             InitializeComponent();
         }
 
-        // INSTRUCTION SUBMIT
-        private void button1_Click(object sender, EventArgs e)
+        private void GUI_Load(object sender, EventArgs e) { }
+        
+        private void button_browse_Click(object sender, EventArgs e)
         {
-            PuppetMaster.splitInstruction(instruction);
-        }
-
-        private void textBox1_TextChanged(object sender, EventArgs e)
-        {
-
-            //string input = loadBox.Text.ToString();
-            //workerID = Convert.ToInt32(input);
-        }
-        // INSTRUCTION TEXTBOX
-        private void textBox3_TextChanged(object sender, EventArgs e)
-        {
-            instruction = textbox_instruction.Text.ToString();
-        }
-
-        private void textBox2_TextChanged(object sender, EventArgs e)
-        {
-            //Recebe o PuppetMasterURL
-        }
-
-        private void textBox4_TextChanged(object sender, EventArgs e)
-        {
-            //Recebe o EntryURL
-        }
-
-        private void GUI_Load(object sender, EventArgs e)
-        {
-
-        }
-
-        private void label3_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        // SCRIPT BROWSE
-        private void button3_Click(object sender, EventArgs e)
-        {
-            if (openFileDialog1.ShowDialog() == DialogResult.OK)
+            if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
-                inputPath = openFileDialog1.FileName;
-                loadBox.Text = inputPath;
-                loadBox.Update();
+                inputPath = openFileDialog.FileName;
+                textBox_loadScript.Text = inputPath;
+                textBox_loadScript.Update();
             }
         }
 
-        // SCRIPT SUBMIT
-        private void submitButton_Click(object sender, EventArgs e)
+        public static void parseScript(string inputPath)
         {
-            PuppetMaster.parseScript(inputPath);
+            string line;
+                System.IO.StreamReader file = new System.IO.StreamReader(inputPath);
+                instructions = new ArrayList();
+                while ((line = file.ReadLine()) != null)
+                {
+                    if (!line[0].Equals('%'))
+                        instructions.Add(line);
+                }
         }
+
+        private void button_submit_Click(object sender, EventArgs e)
+        {
+            try{
+                parseScript(inputPath);
+                nextInstruction = (String)instructions[0];
+                textBox_nextInstruction.Text = nextInstruction;
+                index = 0;
+            }
+            catch (ArgumentNullException)
+            {
+                MessageBox.Show(errorNoPath);
+            }
+        }
+
+        private void button_runAll_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                for (; index < instructions.Count; index++)
+                {
+                    PuppetMaster.splitInstruction((String)instructions[index]);
+                }
+            }
+            catch (NullReferenceException)
+            {
+                MessageBox.Show(errorNoScript);
+            }
+        }
+
+        private void button_next_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (index < instructions.Count)
+                {
+                    PuppetMaster.splitInstruction(nextInstruction);
+                    index++;
+                }
+                if (index < instructions.Count)
+                {
+                    nextInstruction = (String)instructions[index];
+                    textBox_nextInstruction.Text.Remove(0);
+                    textBox_nextInstruction.Text = nextInstruction;
+                }
+            }
+            catch (NullReferenceException) {
+                MessageBox.Show(errorNoScript);
+            }
+        }
+
+        private void textBox_nextInstruction_TextChanged(object sender, EventArgs e)
+        {
+            this.textBox_nextInstruction.Text = nextInstruction;
+        }
+
+        private void button_instructionSubmit_Click(object sender, EventArgs e)
+        {
+            try{
+                if (!instruction.Equals("")){
+                    instruction = textBox_instruction.Text.ToString();
+                    PuppetMaster.splitInstruction(instruction);
+                }
+            }
+            catch(NullReferenceException)
+            {
+                MessageBox.Show(errorNoInstruction);
+            }
+        }
+
     }
 }
