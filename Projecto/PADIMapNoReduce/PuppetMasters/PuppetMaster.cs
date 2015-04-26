@@ -14,22 +14,48 @@ namespace PADIMapNoReduce
 {
     static class PuppetMaster
     {
-        static int thisPuppetMasterPort = 20001;
-        static string thisPuppetMasterURL = "tcp://localhost:" + thisPuppetMasterPort + "/PM";
+        static int puppetMasterPort;
+        static string puppetMasterURL;
+        static string[] puppetMastersURLs;
         static Dictionary<string, string> workers = new Dictionary<string, string>();
         static string[] splittedInstruction;
-
 
         [STAThread]
         static void Main(string[] args)
         {
-            startGUI();
+            if (args.Length == 0)
+            {
+                puppetMasterPort= 20001;
+                puppetMasterURL = "tcp://localhost:" + puppetMasterPort + "/PM";
+                registerChannel(puppetMasterPort);
+                puppetMastersURLs = startPuppetMasters();
+                startGUI();
+            }
+            else
+            {
+                puppetMasterPort= Int32.Parse(args[0]);
+                puppetMasterURL = "tcp://localhost:" + puppetMasterPort + "/PM";
+                registerChannel(puppetMasterPort);
+                Console.WriteLine("PORT = " + Int32.Parse(args[0]));
+                Console.ReadLine();
+            }
+        }
 
-            TcpChannel channel = new TcpChannel(thisPuppetMasterPort);
+        private static void registerChannel(int port)
+        {
+            TcpChannel channel = new TcpChannel(port);
             ChannelServices.RegisterChannel(channel, true);
             RemotingConfiguration.RegisterWellKnownServiceType(typeof(PuppetMasterServices), "PM", WellKnownObjectMode.Singleton);
+        }
 
-            //Console.ReadLine();
+        private static string[] startPuppetMasters()
+        {
+            string[] ports = System.IO.File.ReadAllLines(@"..\..\PMconfig.txt");
+            foreach (string port in ports)
+            {
+                Process.Start(@"PuppetMasters.exe", port);
+            }
+            return ports;
         }
 
         public static void startGUI()
@@ -83,25 +109,28 @@ namespace PADIMapNoReduce
          * Else, does a remote call to the wanted PuppetMaster URL so it creates the worker. */
         public static void startWorker(string[] workerInfo)
         {
-            string puppetMasterURL = workerInfo[2];
-            if (puppetMasterURL.Equals(thisPuppetMasterURL))
+            string targetPuppetMasterURL = workerInfo[2];
+            string serviceURL = workerInfo[3];
+            if (targetPuppetMasterURL.Equals(puppetMasterURL))
             {
-                string serviceURL = workerInfo[3];
                 if (workerInfo.Length == 4)
                 {
                     Process.Start(@"..\..\..\Worker\bin\Debug\Server.exe", serviceURL);
+                    Console.WriteLine("INICIEI O JOB TRACKER " + serviceURL);
                 }
                 else
                 {
                     string entryURL = workerInfo[4];
                     Process.Start(@"..\..\..\Worker\bin\Debug\Server.exe", serviceURL + " " + entryURL);
+                    Console.WriteLine("INICIEI O WORKER " + serviceURL);
                 }
                 string workerID = workerInfo[1];
                 workers.Add(workerID, serviceURL);
             }
             else
             {
-                IPuppetMasters puppetMaster = (IPuppetMasters)Activator.GetObject(typeof(IWorker), puppetMasterURL);
+                Console.WriteLine("VOU PEDIR AO " + targetPuppetMasterURL + "PARA CRIAR O " + serviceURL);
+                IPuppetMasters puppetMaster = (IPuppetMasters)Activator.GetObject(typeof(IWorker), targetPuppetMasterURL);
                 puppetMaster.startWorker(workerInfo);
             }
         }
