@@ -96,11 +96,11 @@ namespace PADIMapNoReduce
             return splitsPerWorker;
         }
 
-        public string getSplitContent(int split, string inputPath) {
+        public string getSplitContent(int split, string inputPath, int nSplits) {
             string content = null;
             
             try {
-                content = client.getSplitContent(split, inputPath);
+                content = client.getSplitContent(split, inputPath, nSplits);
             }
             catch (SocketException) {
                 System.Console.WriteLine("Could not locate server");
@@ -141,8 +141,10 @@ namespace PADIMapNoReduce
         {
             for (int i = 0; i < splits.Count; i++)
             {
-                string mySplitContent = getSplitContent(splits[i], inputPath);
-                IList<KeyValuePair<string, string>> result = processSplit(mySplitContent,code,className);
+                Console.WriteLine("VOU BUSCAR O CONTENT DO SPLIT " + splits[i]);
+                string mySplitContent = getSplitContent(splits[i], inputPath, nSplits);
+                Console.WriteLine("CONTENT RECEBIDO = " + mySplitContent);
+                IList<KeyValuePair<string, string>> result = processSplit(mySplitContent, code, className);
                 try
                 {
                     client.sendResult(result, outputPath + splits[i] + ".out");

@@ -21,7 +21,7 @@ namespace PADIMapNoReduce {
     }
     
     public interface IClient {
-        string getSplitContent(int splitNumber, string inputPath);
+        string getSplitContent(int splitNumber, string inputPath, int nSplits);
         void sendResult(IList<KeyValuePair<string, string>> result, string outputPath);
     }
 

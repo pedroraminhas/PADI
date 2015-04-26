@@ -33,3 +33,10 @@ C:\Users\Ana\Desktop\randomicalyspeaking\PADIMapNoReduce\LibMapper\bin\Debug\Lib
 C:\Users\Ana\Desktop\randomicalyspeaking\PADIMapNoReduce\LibMapper\obj\Debug\LibMapper.csprojResolveAssemblyReference.cache
 C:\Users\Ana\Desktop\randomicalyspeaking\PADIMapNoReduce\LibMapper\obj\Debug\LibMapper.dll
 C:\Users\Ana\Desktop\randomicalyspeaking\PADIMapNoReduce\LibMapper\obj\Debug\LibMapper.pdb
+C:\Users\Ana\Desktop\PADIMapNoReduce\LibMapper\bin\Debug\LibMapper.dll
+C:\Users\Ana\Desktop\PADIMapNoReduce\LibMapper\bin\Debug\LibMapper.pdb
+C:\Users\Ana\Desktop\PADIMapNoReduce\LibMapper\bin\Debug\LibPADIMapNoReduce.dll
+C:\Users\Ana\Desktop\PADIMapNoReduce\LibMapper\bin\Debug\LibPADIMapNoReduce.pdb
+C:\Users\Ana\Desktop\PADIMapNoReduce\LibMapper\obj\Debug\LibMapper.csprojResolveAssemblyReference.cache
+C:\Users\Ana\Desktop\PADIMapNoReduce\LibMapper\obj\Debug\LibMapper.dll
+C:\Users\Ana\Desktop\PADIMapNoReduce\LibMapper\obj\Debug\LibMapper.pdb

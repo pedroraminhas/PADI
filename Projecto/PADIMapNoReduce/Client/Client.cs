@@ -49,11 +49,48 @@ namespace PADIMapNoReduce {
     }
 
     internal class ClientServices : MarshalByRefObject, IClient {
-        public string getSplitContent(int splitNumber, string inputPath) {
+        Dictionary<string, int> nFileLines = new Dictionary<string, int>();
+
+        public string getSplitContent(int splitNumber, string inputPath, int nSplits) {
+            // ver se esta no dicionario
+            //int nLines = File.ReadAllLines(@inputPath).Length;
+           //nFileLines.Add(inputPath, nLines);
+            int nLines = 10;
+            Console.WriteLine("N LINES OF " + inputPath + " = " + nLines);
+            
+            int nLinesPerSplit;
+            if (nLines % nSplits == 0)
+            {
+                nLinesPerSplit = nLines / nSplits;
+            }
+            else
+            {
+                nLinesPerSplit = nLines / nSplits + 1;
+            }
+
+            int start = splitNumber * nLinesPerSplit;
+            Console.WriteLine("START = " + start);
+            //int last = splitNumber * nLinesPerSplit + nLinesPerSplit - 1;
+
             using (var sr = new StreamReader(inputPath)) {
-                for (int i = 0; i < splitNumber; i++)
-                    sr.ReadLine();
-                return sr.ReadLine();
+                string[] linesContent = File.ReadAllLines(@inputPath);
+                Console.WriteLine("CONTENT = " + string.Join(" ", linesContent));
+                
+                
+                int linesToRead;
+                if (start + nLinesPerSplit > linesContent.Length)
+                {
+                    linesToRead = linesContent.Length - start;
+                }
+                else
+                {
+                    linesToRead = nLinesPerSplit;
+                }
+
+                string[] mySplitContent = new string[linesToRead];
+                Array.Copy(linesContent, start, mySplitContent, 0, linesToRead);
+                Console.WriteLine("MY SPLIT = " + string.Join(" ", mySplitContent));
+                return string.Join(" ", mySplitContent);
             }
         }
 
