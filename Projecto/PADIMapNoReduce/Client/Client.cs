@@ -35,14 +35,22 @@ namespace PADIMapNoReduce {
         private static void submit()
         {
             IWorker jobTracker = (IWorker)Activator.GetObject(typeof(IWorker), jobTrackerURL);
+            byte[] code = File.ReadAllBytes(dllPath);
             try
             {
-                byte[] code = File.ReadAllBytes(dllPath);
+                string[] files = Directory.GetFiles(outputPath, "*.out");
+                foreach (string f in files)
+                {
+                    File.Delete(f);
+                }
                 Console.WriteLine(jobTracker.submit(inputPath, nSplits, outputPath, mapperName, code));
             }
             catch (SocketException)
             {
-                System.Console.WriteLine("Could not locate server");
+                Console.WriteLine("Could not locate server");
+            }
+            catch (DirectoryNotFoundException) {
+                Console.WriteLine(jobTracker.submit(inputPath, nSplits, outputPath, mapperName, code));
             }
             Console.ReadLine();
         }
@@ -52,51 +60,80 @@ namespace PADIMapNoReduce {
         Dictionary<string, int> nFileLines = new Dictionary<string, int>();
 
         public string getSplitContent(int splitNumber, string inputPath, int nSplits) {
-            // ver se esta no dicionario
-            //int nLines = File.ReadAllLines(@inputPath).Length;
-           //nFileLines.Add(inputPath, nLines);
-            int nLines = 10;
-            Console.WriteLine("N LINES OF " + inputPath + " = " + nLines);
+            Console.WriteLine("CHEGUEI E QUERO O SPLIT " + splitNumber);
             
-            int nLinesPerSplit;
-            if (nLines % nSplits == 0)
-            {
-                nLinesPerSplit = nLines / nSplits;
-            }
-            else
-            {
-                nLinesPerSplit = nLines / nSplits + 1;
-            }
-
-            int start = splitNumber * nLinesPerSplit;
-            Console.WriteLine("START = " + start);
-            //int last = splitNumber * nLinesPerSplit + nLinesPerSplit - 1;
-
-            using (var sr = new StreamReader(inputPath)) {
-                string[] linesContent = File.ReadAllLines(@inputPath);
-                Console.WriteLine("CONTENT = " + string.Join(" ", linesContent));
-                
-                
-                int linesToRead;
-                if (start + nLinesPerSplit > linesContent.Length)
+                int nLines;
+                Console.WriteLine("NSPLITS QUE RECEBE = " + nSplits);
+                if (nFileLines.ContainsKey(inputPath))
                 {
-                    linesToRead = linesContent.Length - start;
+                    nLines = nFileLines[inputPath];
                 }
                 else
                 {
-                    linesToRead = nLinesPerSplit;
+                    nLines = File.ReadAllLines(@inputPath).Length;
+                    nFileLines.Add(inputPath, nLines);
                 }
 
-                string[] mySplitContent = new string[linesToRead];
-                Array.Copy(linesContent, start, mySplitContent, 0, linesToRead);
-                Console.WriteLine("MY SPLIT = " + string.Join(" ", mySplitContent));
-                return string.Join(" ", mySplitContent);
-            }
+                Console.WriteLine("N LINES OF " + inputPath + " = " + nLines);
+
+                int nLinesPerSplit;
+                if (nLines % nSplits == 0)
+                {
+                    nLinesPerSplit = nLines / nSplits;
+                }
+                else
+                {
+                    nLinesPerSplit = nLines / nSplits + 1;
+                }
+
+                int start = splitNumber * nLinesPerSplit;
+                Console.WriteLine("START = " + start);
+                //int last = splitNumber * nLinesPerSplit + nLinesPerSplit - 1;
+
+                using (var sr = new StreamReader(inputPath))
+                {
+                    string[] linesContent = File.ReadAllLines(@inputPath);
+                    Console.WriteLine("CONTENT = " + string.Join(" ", linesContent));
+
+                    int linesToRead;
+                    if (start + nLinesPerSplit > linesContent.Length)
+                    {
+                        linesToRead = linesContent.Length - start;
+                    }
+                    else
+                    {
+                        linesToRead = nLinesPerSplit;
+                    }
+
+                    Console.WriteLine("COISO " + linesToRead);
+
+                    if (linesToRead != 0)
+                    {
+                        string[] mySplitContent = new string[linesToRead];
+                        Array.Copy(linesContent, start, mySplitContent, 0, linesToRead);
+                        Console.WriteLine("MY SPLIT = " + string.Join(" ", mySplitContent));
+                        return string.Join(" ", mySplitContent);
+                    }
+                    else
+                    {
+                        return "";
+                    }
+                }
+                
         }
 
-        public void sendResult(IList<KeyValuePair<string, string>> result, string outputPath) {
-            foreach (KeyValuePair<string, string> p in result) {
-                System.IO.File.AppendAllText(outputPath, p.Key + " " + p.Value + Environment.NewLine);
+        public void sendResult(IList<KeyValuePair<string, string>> result, string outputPath, string splitIdentifier) {
+            if (result != null)
+            {
+                if (!Directory.Exists(outputPath))
+                {
+                    Directory.CreateDirectory(outputPath);
+                }
+
+                foreach (KeyValuePair<string, string> p in result)
+                {
+                    System.IO.File.AppendAllText(outputPath + splitIdentifier, p.Key + " " + p.Value + Environment.NewLine);
+                }
             }
         }
     }

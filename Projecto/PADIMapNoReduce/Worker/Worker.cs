@@ -65,7 +65,8 @@ namespace PADIMapNoReduce
             className = myClassName;
             code = myCode;
             Thread.Sleep(1000);
-            splitsPerWorker = splitFile(nSplits);
+            //Console.WriteLine("RECEBI NSPLITS = " + nSplits);
+            splitsPerWorker = splitFile();
 
             /*for (int i = 0; i < splitsPerWorker.Length; i++)
             {
@@ -76,12 +77,12 @@ namespace PADIMapNoReduce
                 }
             }*/
             assignMapTask();
-            doMapTask(splitsPerWorker[0], workersURLs[0],inputPath,outputPath,code,className);
+            doMapTask(splitsPerWorker[0], workersURLs[0], inputPath, outputPath, code, className, nSplits);
             return true;
         }
 
         /* Each worker is given a list of splits, which are distributed in round robin style. */
-        public List<int>[] splitFile(int nSplits) {
+        public List<int>[] splitFile() {
             int nWorkers = workersURLs.Count;
             List<int>[] splitsPerWorker = new List<int>[nWorkers];
 
@@ -103,7 +104,7 @@ namespace PADIMapNoReduce
                 content = client.getSplitContent(split, inputPath, nSplits);
             }
             catch (SocketException) {
-                System.Console.WriteLine("Could not locate server");
+                System.Console.WriteLine("Could not locate the client");
             }
 
             return content;
@@ -111,8 +112,10 @@ namespace PADIMapNoReduce
 
         public void assignMapTask() {
             Thread[] mapThreads = new Thread[workersURLs.Count];
+            Console.WriteLine("N WORKERS = " + workersURLs.Count);
             for (int i = 1; i < workersURLs.Count; i++)
             {
+                Console.WriteLine("WORKER URL = " + workersURLs[i]);
                 try
                 {
                     mapThreads[i] = new Thread(() => doTask(workersURLs[i], splitsPerWorker[i]));
@@ -129,25 +132,47 @@ namespace PADIMapNoReduce
         public void doTask(string workerURL, List<int> splits)
         {
             IWorker worker = (IWorker)Activator.GetObject(typeof(IWorker), workerURL);
-            worker.doMapTask(splits, workerURL, inputPath, outputPath, code, className);
+            worker.doMapTask(splits, workerURL, inputPath, outputPath, code, className, nSplits);
         }
 
-        /*public void doTask()
-        {
-            Console.WriteLine("ESTOU CA");
-        }*/
 
-        public void doMapTask(List<int> splits, string workerURL,string inputPath,string outputPath, byte[] code, string className)
+        public IList<KeyValuePair<string, string>> processSplit(string mySplitContent, byte[] code, string className)
+        {
+            if (mySplitContent != "")
+            {
+                Assembly assembly = Assembly.Load(code);
+                foreach (Type type in assembly.GetTypes())
+                {
+                    if (type.IsClass == true)
+                    {
+                        if (type.FullName.EndsWith("." + className))
+                        {
+                            object ClassObj = Activator.CreateInstance(type);
+                            object[] args = new object[] { mySplitContent };
+                            object resultObject = type.InvokeMember("Map", BindingFlags.Default | BindingFlags.InvokeMethod, null, ClassObj, args);
+
+                            return (IList<KeyValuePair<string, string>>)resultObject;
+                        }
+                    }
+                }
+                throw (new System.Exception("could not invoke method"));
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+
+        public void doMapTask(List<int> splits, string workerURL,string inputPath,string outputPath, byte[] code, string className, int nSplits)
         {
             for (int i = 0; i < splits.Count; i++)
             {
-                Console.WriteLine("VOU BUSCAR O CONTENT DO SPLIT " + splits[i]);
                 string mySplitContent = getSplitContent(splits[i], inputPath, nSplits);
-                Console.WriteLine("CONTENT RECEBIDO = " + mySplitContent);
                 IList<KeyValuePair<string, string>> result = processSplit(mySplitContent, code, className);
                 try
                 {
-                    client.sendResult(result, outputPath + splits[i] + ".out");
+                    client.sendResult(result, outputPath, splits[i] + ".out");
                     Console.WriteLine("WORKER " + workerURL + " FINISHED " + splits[i]);
                 }
                 catch (SocketException)
@@ -155,26 +180,6 @@ namespace PADIMapNoReduce
                     System.Console.WriteLine("Could not locate the client...");
                 }
             }
-        }
-
-        public IList<KeyValuePair<string, string>> processSplit(string mySplitContent, byte[] code,string className)
-        {
-            Assembly assembly = Assembly.Load(code);
-            foreach (Type type in assembly.GetTypes())
-            {
-                if (type.IsClass == true)
-                {
-                    if (type.FullName.EndsWith("." + className))
-                    {
-                        object ClassObj = Activator.CreateInstance(type);
-                        object[] args = new object[] {mySplitContent};
-                        object resultObject = type.InvokeMember("Map", BindingFlags.Default | BindingFlags.InvokeMethod, null, ClassObj, args);
-
-                        return (IList<KeyValuePair<string, string>>)resultObject;
-                    }
-                }
-            }
-            throw (new System.Exception("could not invoke method"));
         }
 
         public void getStatus() { }

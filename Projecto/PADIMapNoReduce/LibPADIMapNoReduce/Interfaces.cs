@@ -11,7 +11,7 @@ namespace PADIMapNoReduce {
 
     public interface IWorker : IMapperTransfer {
         void notify(string workerURL);
-        void doMapTask(List<int> splits, string workerURL, string inputPath, string outputPath, byte[] code, string className);
+        void doMapTask(List<int> splits, string workerURL, string inputPath, string outputPath, byte[] code, string className, int nSplits);
         void getStatus();
         void slowWorker(int seconds);
         void freezeWorker();
@@ -22,7 +22,7 @@ namespace PADIMapNoReduce {
     
     public interface IClient {
         string getSplitContent(int splitNumber, string inputPath, int nSplits);
-        void sendResult(IList<KeyValuePair<string, string>> result, string outputPath);
+        void sendResult(IList<KeyValuePair<string, string>> result, string outputPath, string splitIdentifier);
     }
 
     public interface IPuppetMasters {
