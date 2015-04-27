@@ -48,6 +48,8 @@ namespace PADIMapNoReduce
         string outputPath;
         string className;
          byte[] code;
+         Thread[] mapThreads;
+
 
         //CHECK THIIIIIS
         IClient client = (IClient)Activator.GetObject(typeof(IClient), "tcp://localhost:10001/C");
@@ -68,14 +70,6 @@ namespace PADIMapNoReduce
             //Console.WriteLine("RECEBI NSPLITS = " + nSplits);
             splitsPerWorker = splitFile();
 
-            /*for (int i = 0; i < splitsPerWorker.Length; i++)
-            {
-                for (int j = 0; j < splitsPerWorker[i].Count; j++)
-                {
-                    Console.WriteLine(i);
-                    Console.WriteLine("SPLIT: " + splitsPerWorker[i][j]);
-                }
-            }*/
             assignMapTask();
             doMapTask(splitsPerWorker[0], workersURLs[0], inputPath, outputPath, code, className, nSplits);
             return true;
@@ -111,7 +105,7 @@ namespace PADIMapNoReduce
         }
 
         public void assignMapTask() {
-            Thread[] mapThreads = new Thread[workersURLs.Count];
+            mapThreads = new Thread[workersURLs.Count];
             Console.WriteLine("N WORKERS = " + workersURLs.Count);
             for (int i = 1; i < workersURLs.Count; i++)
             {
@@ -183,7 +177,9 @@ namespace PADIMapNoReduce
         }
 
         public void getStatus() { }
-        public void slowWorker(int seconds) { }
+        public void slowWorker(int miliSeconds) {
+            Thread.Sleep(miliSeconds);
+        }
         public void freezeWorker() { }
         public void unfreezeWorker() { }
         public void freezeJobTracker() { }

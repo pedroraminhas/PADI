@@ -84,7 +84,9 @@ namespace PADIMapNoReduce
                     getStatus();
                     break;
                 case "SLOWW":
-                    slowWorker();
+                    Thread threadSloWWorker = new Thread(() => slowWorker(workers,splittedInstruction));
+                    Monitor.Enter(splittedInstruction);
+                    threadSloWWorker.Start();
                     break;
                 case "FREEZEW":
                     freezeWorker();
@@ -154,10 +156,16 @@ namespace PADIMapNoReduce
             }
         }
 
-        private static void slowWorker()
+        private static void slowWorker(Dictionary<string, string> workers, string[] splittedInstruction)
         {
-            IWorker target = (IWorker)Activator.GetObject(typeof(IWorker), workers[splittedInstruction[1]]);
-            target.slowWorker(int.Parse(splittedInstruction[2]) * 1000);
+            /*string workerID = splittedInstruction[1];
+
+            Console.WriteLine("Existem este numero de workers " + workers.Count);
+            Console.WriteLine(splittedInstruction[0]);
+            Console.WriteLine("ID do worker " + workerID);
+            IWorker target = (IWorker)Activator.GetObject(typeof(IWorker), workers[workerID]);
+            target.slowWorker(Convert.ToInt32(splittedInstruction[2]) * 1000);
+            Monitor.Exit(splittedInstruction);*/
         }
 
         private static void freezeWorker()

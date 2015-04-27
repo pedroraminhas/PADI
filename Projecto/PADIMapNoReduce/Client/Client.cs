@@ -63,7 +63,8 @@ namespace PADIMapNoReduce {
             Console.WriteLine("CHEGUEI E QUERO O SPLIT " + splitNumber);
             
                 int nLines;
-                Console.WriteLine("NSPLITS QUE RECEBE = " + nSplits);
+                int linesToRead;
+
                 if (nFileLines.ContainsKey(inputPath))
                 {
                     nLines = nFileLines[inputPath];
@@ -74,9 +75,7 @@ namespace PADIMapNoReduce {
                     nFileLines.Add(inputPath, nLines);
                 }
 
-                Console.WriteLine("N LINES OF " + inputPath + " = " + nLines);
-
-                int nLinesPerSplit;
+               /* int nLinesPerSplit;
                 if (nLines % nSplits == 0)
                 {
                     nLinesPerSplit = nLines / nSplits;
@@ -84,7 +83,10 @@ namespace PADIMapNoReduce {
                 else
                 {
                     nLinesPerSplit = nLines / nSplits + 1;
-                }
+                }*/
+
+                int nLinesPerSplit = nLines / nSplits;
+                int remainingLines = nLines % nSplits;
 
                 int start = splitNumber * nLinesPerSplit;
                 Console.WriteLine("START = " + start);
@@ -93,19 +95,27 @@ namespace PADIMapNoReduce {
                 using (var sr = new StreamReader(inputPath))
                 {
                     string[] linesContent = File.ReadAllLines(@inputPath);
-                    Console.WriteLine("CONTENT = " + string.Join(" ", linesContent));
 
-                    int linesToRead;
-                    if (start + nLinesPerSplit > linesContent.Length)
+                    if (splitNumber == (nSplits - 1))
                     {
-                        linesToRead = linesContent.Length - start;
+                        linesToRead = nLinesPerSplit + remainingLines;
                     }
                     else
                     {
                         linesToRead = nLinesPerSplit;
                     }
 
-                    Console.WriteLine("COISO " + linesToRead);
+                   /* if (start + nLinesPerSplit > linesContent.Length)
+                    {
+                        linesToRead = linesContent.Length - start;
+                    }
+                    else
+                    {
+                        linesToRead = nLinesPerSplit;
+                    }*/
+
+                    Console.WriteLine("Linhas que ira ler " + linesToRead + "o split " + splitNumber);
+                    Console.WriteLine("NSPLITS " + nSplits);
 
                     if (linesToRead != 0)
                     {
