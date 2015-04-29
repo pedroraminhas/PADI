@@ -146,5 +146,13 @@ namespace PADIMapNoReduce {
                 }
             }
         }
+
+        public override object InitializeLifetimeService()
+        {
+
+            return null;
+
+        }
+
     }
 }

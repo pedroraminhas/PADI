@@ -70,6 +70,7 @@ namespace PADIMapNoReduce
             //Console.WriteLine("RECEBI NSPLITS = " + nSplits);
             splitsPerWorker = splitFile();
 
+            mapThreads[0] = Thread.CurrentThread;
             assignMapTask();
             doMapTask(splitsPerWorker[0], workersURLs[0], inputPath, outputPath, code, className, nSplits);
             return true;
@@ -178,8 +179,16 @@ namespace PADIMapNoReduce
 
         public void getStatus() { }
         public void slowWorker(int miliSeconds) {
+            Console.WriteLine("Antes do slow");
             Thread.Sleep(miliSeconds);
+            Console.WriteLine("Depois do slow");        
         }
+
+        public override object InitializeLifetimeService()
+        {
+            return null;
+        }
+
         public void freezeWorker() { }
         public void unfreezeWorker() { }
         public void freezeJobTracker() { }
