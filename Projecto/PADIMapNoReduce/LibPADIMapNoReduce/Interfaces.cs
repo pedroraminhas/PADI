@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading;
 
 namespace PADIMapNoReduce {
     public interface IMapper {
@@ -13,7 +14,8 @@ namespace PADIMapNoReduce {
         void notify(string workerURL);
         void doMapTask(List<int> splits, string workerURL, string inputPath, string outputPath, byte[] code, string className, int nSplits);
         void getStatus();
-        void slowWorker(int seconds);
+        void slowWorker(int milisseconds, int workerID);
+        Thread[] getMapThreads();
         void freezeWorker();
         void unfreezeWorker();
         void freezeJobTracker();

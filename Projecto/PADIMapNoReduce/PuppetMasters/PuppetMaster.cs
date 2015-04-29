@@ -163,7 +163,19 @@ namespace PADIMapNoReduce
         {
             Console.WriteLine("ID do worker " + workerID);
             IWorker target = (IWorker)Activator.GetObject(typeof(IWorker), workers[workerID]);
-            target.slowWorker(Convert.ToInt32(seconds) * 1000);
+
+            int workerURLindex = Convert.ToInt32(workerID) - 1;
+            Thread[] mapThreads = target.getMapThreads();
+            Thread workerThread = mapThreads[workerURLindex];
+
+            TimeSpan t = DateTime.Now.TimeOfDay.Add(new TimeSpan(0, 0, Convert.ToInt32(seconds)));
+            Console.WriteLine("Antes do sleep");
+           workerThread.Suspend();
+            while (DateTime.Now.TimeOfDay.CompareTo(t) == -1) { Console.WriteLine("."); }
+            workerThread.Resume();
+
+
+            target.slowWorker(Convert.ToInt32(seconds) * 1000, Convert.ToInt32(workerID));
         }
 
         private static void freezeWorker()

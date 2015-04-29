@@ -48,7 +48,7 @@ namespace PADIMapNoReduce
         string outputPath;
         string className;
          byte[] code;
-         Thread[] mapThreads;
+         public static Thread[] mapThreads;
 
 
         //CHECK THIIIIIS
@@ -66,12 +66,23 @@ namespace PADIMapNoReduce
             outputPath = myOutputPath;
             className = myClassName;
             code = myCode;
-            Thread.Sleep(1000);
+            mapThreads = new Thread[workersURLs.Count];
             //Console.WriteLine("RECEBI NSPLITS = " + nSplits);
             splitsPerWorker = splitFile();
+            for (int i = 0; i < workersURLs.Count; i++)
+            {
+                Console.WriteLine(i + " - " + workersURLs[i]);
+                }
 
             mapThreads[0] = Thread.CurrentThread;
-            assignMapTask();
+            try
+            {
+                assignMapTask();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.ToString());
+            }
             doMapTask(splitsPerWorker[0], workersURLs[0], inputPath, outputPath, code, className, nSplits);
             return true;
         }
@@ -106,7 +117,6 @@ namespace PADIMapNoReduce
         }
 
         public void assignMapTask() {
-            mapThreads = new Thread[workersURLs.Count];
             Console.WriteLine("N WORKERS = " + workersURLs.Count);
             for (int i = 1; i < workersURLs.Count; i++)
             {
@@ -178,10 +188,19 @@ namespace PADIMapNoReduce
         }
 
         public void getStatus() { }
-        public void slowWorker(int miliSeconds) {
-            Console.WriteLine("Antes do slow");
-            Thread.Sleep(miliSeconds);
-            Console.WriteLine("Depois do slow");        
+        public void slowWorker(int milisseconds, int workerID) {
+            Console.WriteLine("ESTOU A FAZER SLEEP NO WORKER" + workerID);
+            Console.WriteLine("NO PORTO" + workersURLs[workerID - 1]);
+            int workerURLindex = workerID - 1;
+            TimeSpan t=  DateTime.Now.TimeOfDay.Add(new TimeSpan(0,0, milisseconds/1000));
+            Console.WriteLine("Antes do sleep");
+            while (DateTime.Now.TimeOfDay.CompareTo(t) == -1) { Console.Write(".");}
+            Console.WriteLine("Depois do slow");    
+        }
+
+        public Thread[] getMapThreads() {
+            return mapThreads;
+
         }
 
         public override object InitializeLifetimeService()
