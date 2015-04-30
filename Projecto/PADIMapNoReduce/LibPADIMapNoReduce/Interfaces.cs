@@ -12,9 +12,9 @@ namespace PADIMapNoReduce {
 
     public interface IWorker : IMapperTransfer {
         void notify(string workerURL);
-        void doMapTask(List<int> splits, string workerURL, string inputPath, string outputPath, byte[] code, string className, int nSplits);
+        void doMapTask(List<int> splits, string workerURL, string inputPath, string outputPath, byte[] code, string className, int nSplits, Thread myThread);
         void getStatus();
-        void slowWorker(int milisseconds, int workerID);
+        void slowWorker(int seconds, int workerID);
         Thread[] getMapThreads();
         void freezeWorker();
         void unfreezeWorker();

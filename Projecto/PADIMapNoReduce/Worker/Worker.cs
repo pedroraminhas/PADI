@@ -49,6 +49,7 @@ namespace PADIMapNoReduce
         string className;
          byte[] code;
          public static Thread[] mapThreads;
+         public static Thread workerThread;
 
 
         //CHECK THIIIIIS
@@ -75,6 +76,8 @@ namespace PADIMapNoReduce
                 }
 
             mapThreads[0] = Thread.CurrentThread;
+            workerThread = Thread.CurrentThread;
+            Console.WriteLine("SUBMIT --" + workerThread.IsAlive);
             try
             {
                 assignMapTask();
@@ -83,7 +86,7 @@ namespace PADIMapNoReduce
             {
                 Console.WriteLine(e.ToString());
             }
-            doMapTask(splitsPerWorker[0], workersURLs[0], inputPath, outputPath, code, className, nSplits);
+            doMapTask(splitsPerWorker[0], workersURLs[0], inputPath, outputPath, code, className, nSplits, workerThread);
             return true;
         }
 
@@ -123,7 +126,7 @@ namespace PADIMapNoReduce
                 Console.WriteLine("WORKER URL = " + workersURLs[i]);
                 try
                 {
-                    mapThreads[i] = new Thread(() => doTask(workersURLs[i], splitsPerWorker[i]));
+                    mapThreads[i] = new Thread(() => doTask(workersURLs[i], splitsPerWorker[i], mapThreads[i]));
                     mapThreads[i].Start();
                     Thread.Sleep(2);
                 }
@@ -134,10 +137,10 @@ namespace PADIMapNoReduce
             }
         }
 
-        public void doTask(string workerURL, List<int> splits)
+        public void doTask(string workerURL, List<int> splits, Thread myThread)
         {
             IWorker worker = (IWorker)Activator.GetObject(typeof(IWorker), workerURL);
-            worker.doMapTask(splits, workerURL, inputPath, outputPath, code, className, nSplits);
+            worker.doMapTask(splits, workerURL, inputPath, outputPath, code, className, nSplits,myThread);
         }
 
 
@@ -169,8 +172,10 @@ namespace PADIMapNoReduce
         }
 
 
-        public void doMapTask(List<int> splits, string workerURL,string inputPath,string outputPath, byte[] code, string className, int nSplits)
+        public void doMapTask(List<int> splits, string workerURL,string inputPath,string outputPath, byte[] code, string className, int nSplits, Thread myThread)
         {
+            workerThread = myThread;
+            Console.WriteLine("DO MAP TASK --" + workerThread.IsAlive);
             for (int i = 0; i < splits.Count; i++)
             {
                 string mySplitContent = getSplitContent(splits[i], inputPath, nSplits);
@@ -188,14 +193,47 @@ namespace PADIMapNoReduce
         }
 
         public void getStatus() { }
-        public void slowWorker(int milisseconds, int workerID) {
-            Console.WriteLine("ESTOU A FAZER SLEEP NO WORKER" + workerID);
-            Console.WriteLine("NO PORTO" + workersURLs[workerID - 1]);
-            int workerURLindex = workerID - 1;
-            TimeSpan t=  DateTime.Now.TimeOfDay.Add(new TimeSpan(0,0, milisseconds/1000));
+
+        
+
+        public void slowWorker(int seconds, int workerID)
+        {
+            TimeSpan t = DateTime.Now.TimeOfDay.Add(new TimeSpan(0, 0, Convert.ToInt32(seconds)));
             Console.WriteLine("Antes do sleep");
-            while (DateTime.Now.TimeOfDay.CompareTo(t) == -1) { Console.Write(".");}
-            Console.WriteLine("Depois do slow");    
+            bool canPass = false;
+
+            while (!canPass)
+            {
+                try
+                {
+                    if (workerThread.IsAlive)
+                        canPass = true;
+                }
+                catch (NullReferenceException)
+                {
+                }
+            }
+
+
+
+                try
+                {
+                    Console.WriteLine("SLOW --" + workerThread.IsAlive);
+                    Console.WriteLine("ANTES DO SUSPEND");
+                    Console.WriteLine("T = " + t);
+
+                    workerThread.Suspend();
+                    Console.WriteLine(Thread.CurrentThread.Equals(workerThread));
+                    Console.WriteLine("NOW = " + DateTime.Now.TimeOfDay);
+                    while (DateTime.Now.TimeOfDay <= t) { Console.Write("."); }
+                    Console.WriteLine("OOOOOO");
+                    workerThread.Resume();
+                    Console.WriteLine("ACORDEI");
+                }
+                catch (NullReferenceException e)
+                { Console.WriteLine(e.StackTrace); }
+
+            
         }
 
         public Thread[] getMapThreads() {

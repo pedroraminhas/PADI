@@ -5,13 +5,6 @@ C:\Users\Pedro Raminhas\Desktop\HOLY GRAIL 2\MapperTransfer\Client\bin\Debug\Lib
 C:\Users\Pedro Raminhas\Desktop\HOLY GRAIL 2\MapperTransfer\Client\obj\Debug\Client.csprojResolveAssemblyReference.cache
 C:\Users\Pedro Raminhas\Desktop\HOLY GRAIL 2\MapperTransfer\Client\obj\Debug\Client.exe
 C:\Users\Pedro Raminhas\Desktop\HOLY GRAIL 2\MapperTransfer\Client\obj\Debug\Client.pdb
-C:\Users\Pedro Raminhas\Desktop\PADIMapNoReduce\Client\bin\Debug\Client.exe
-C:\Users\Pedro Raminhas\Desktop\PADIMapNoReduce\Client\bin\Debug\Client.pdb
-C:\Users\Pedro Raminhas\Desktop\PADIMapNoReduce\Client\bin\Debug\LibPADIMapNoReduce.dll
-C:\Users\Pedro Raminhas\Desktop\PADIMapNoReduce\Client\bin\Debug\LibPADIMapNoReduce.pdb
-C:\Users\Pedro Raminhas\Desktop\PADIMapNoReduce\Client\obj\Debug\Client.csprojResolveAssemblyReference.cache
-C:\Users\Pedro Raminhas\Desktop\PADIMapNoReduce\Client\obj\Debug\Client.exe
-C:\Users\Pedro Raminhas\Desktop\PADIMapNoReduce\Client\obj\Debug\Client.pdb
 C:\Users\Ana\Desktop\abril08tarde\PADIMapNoReduce\Client\bin\Debug\Client.exe
 C:\Users\Ana\Desktop\abril08tarde\PADIMapNoReduce\Client\bin\Debug\Client.pdb
 C:\Users\Ana\Desktop\abril08tarde\PADIMapNoReduce\Client\bin\Debug\LibPADIMapNoReduce.dll
@@ -40,3 +33,10 @@ C:\Users\Ana\Desktop\PADIMapNoReduce\Client\bin\Debug\LibPADIMapNoReduce.pdb
 C:\Users\Ana\Desktop\PADIMapNoReduce\Client\obj\Debug\Client.csprojResolveAssemblyReference.cache
 C:\Users\Ana\Desktop\PADIMapNoReduce\Client\obj\Debug\Client.exe
 C:\Users\Ana\Desktop\PADIMapNoReduce\Client\obj\Debug\Client.pdb
+C:\Users\Pedro Raminhas\Desktop\PADIMapNoReduce\Client\bin\Debug\Client.exe
+C:\Users\Pedro Raminhas\Desktop\PADIMapNoReduce\Client\bin\Debug\Client.pdb
+C:\Users\Pedro Raminhas\Desktop\PADIMapNoReduce\Client\bin\Debug\LibPADIMapNoReduce.dll
+C:\Users\Pedro Raminhas\Desktop\PADIMapNoReduce\Client\bin\Debug\LibPADIMapNoReduce.pdb
+C:\Users\Pedro Raminhas\Desktop\PADIMapNoReduce\Client\obj\Debug\Client.csprojResolveAssemblyReference.cache
+C:\Users\Pedro Raminhas\Desktop\PADIMapNoReduce\Client\obj\Debug\Client.exe
+C:\Users\Pedro Raminhas\Desktop\PADIMapNoReduce\Client\obj\Debug\Client.pdb
