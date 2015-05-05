@@ -16,7 +16,7 @@ namespace PADIMapNoReduce
     {
         static int puppetMasterPort;
         static string puppetMasterURL;
-        static string[] puppetMastersURLs;
+        //static string[] puppetMastersURLs;
         static Dictionary<string, string> workers = new Dictionary<string, string>();
         static string[] splittedInstruction;
 
@@ -28,7 +28,7 @@ namespace PADIMapNoReduce
                 puppetMasterPort= 20001;
                 puppetMasterURL = "tcp://localhost:" + puppetMasterPort + "/PM";
                 registerChannel(puppetMasterPort);
-              //  puppetMastersURLs = startPuppetMasters();
+                //puppetMastersURLs = startPuppetMasters();
                 startGUI();
             }
             else
@@ -84,11 +84,8 @@ namespace PADIMapNoReduce
                     getStatus();
                     break;
                 case "SLOWW":
-                    string workerID = splittedInstruction[1];
-                    string seconds = splittedInstruction[2];
-                    Thread threadSloWWorker = new Thread(() => slowWorker(workers,workerID,seconds));                 
+                    Thread threadSloWWorker = new Thread(() => slowWorker(workers,splittedInstruction));
                     threadSloWWorker.Start();
-                    while (!threadSloWWorker.IsAlive);
                     Thread.Sleep(2);
                     break;
                 case "FREEZEW":
@@ -159,16 +156,15 @@ namespace PADIMapNoReduce
             }
         }
 
-        private static void slowWorker(Dictionary<string, string> workers, string workerID, string seconds)
+        private static void slowWorker(Dictionary<string, string> workers, string[] splittedInstruction)
         {
+            string workerID = splittedInstruction[1];
+
+            Console.WriteLine("Existem este numero de workers " + workers.Count);
+            Console.WriteLine(splittedInstruction[0]);
             Console.WriteLine("ID do worker " + workerID);
-            Console.WriteLine("WORKERUL " + workers[workerID]);
             IWorker target = (IWorker)Activator.GetObject(typeof(IWorker), workers[workerID]);
-
-            int workerURLindex = Convert.ToInt32(workerID) - 1;
-            target.slowWorker(Convert.ToInt32(seconds), workerURLindex);
-
-        
+            target.slowWorker(Convert.ToInt32(splittedInstruction[2]));
         }
 
         private static void freezeWorker()

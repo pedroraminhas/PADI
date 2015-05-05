@@ -19,7 +19,6 @@ Global
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{A56EAE84-DBA3-4A4A-ACF1-A46D5830753D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A56EAE84-DBA3-4A4A-ACF1-A46D5830753D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A56EAE84-DBA3-4A4A-ACF1-A46D5830753D}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
 		{A56EAE84-DBA3-4A4A-ACF1-A46D5830753D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A56EAE84-DBA3-4A4A-ACF1-A46D5830753D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{E70FBDBF-80B2-44D5-8E93-7C14D5D6D1BA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU

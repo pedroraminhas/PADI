@@ -6,6 +6,7 @@ using System.Runtime.Remoting;
 using System.Runtime.Remoting.Channels;
 using System.Runtime.Remoting.Channels.Tcp;
 using System.Threading;
+using System.Timers;
 
 
 namespace PADIMapNoReduce
@@ -47,12 +48,9 @@ namespace PADIMapNoReduce
         int nSplits;
         string outputPath;
         string className;
-         byte[] code;
-         public static Thread[] mapThreads;
-         public static Thread workerThread;
+        byte[] code;
+        Thread myThread;
 
-
-        //CHECK THIIIIIS
         IClient client = (IClient)Activator.GetObject(typeof(IClient), "tcp://localhost:10001/C");
         List<int>[] splitsPerWorker;
         
@@ -62,31 +60,18 @@ namespace PADIMapNoReduce
         }
 
         public bool submit(string myInputPath, int numSplits, string myOutputPath, string myClassName, byte[] myCode) {
+            myThread = Thread.CurrentThread;
             inputPath = myInputPath;
             nSplits = numSplits;
             outputPath = myOutputPath;
             className = myClassName;
             code = myCode;
-            mapThreads = new Thread[workersURLs.Count];
-            //Console.WriteLine("RECEBI NSPLITS = " + nSplits);
             splitsPerWorker = splitFile();
-            for (int i = 0; i < workersURLs.Count; i++)
-            {
-                Console.WriteLine(i + " - " + workersURLs[i]);
-                }
-
-            mapThreads[0] = Thread.CurrentThread;
-            workerThread = Thread.CurrentThread;
-            Console.WriteLine("SUBMIT --" + workerThread.IsAlive);
-            try
-            {
-                assignMapTask();
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.ToString());
-            }
-            doMapTask(splitsPerWorker[0], workersURLs[0], inputPath, outputPath, code, className, nSplits, workerThread);
+            Console.WriteLine("FAZER ASSIGN");
+            assignMapTask();
+            Console.WriteLine("FAZER TASK");
+            doMapTask(splitsPerWorker[0], workersURLs[0], inputPath, outputPath, code, className, nSplits);
+            Console.WriteLine("FIZ TASK");
             return true;
         }
 
@@ -126,8 +111,7 @@ namespace PADIMapNoReduce
                 Console.WriteLine("WORKER URL = " + workersURLs[i]);
                 try
                 {
-                    mapThreads[i] = new Thread(() => doTask(workersURLs[i], splitsPerWorker[i], mapThreads[i]));
-                    mapThreads[i].Start();
+                    new Thread(() => doTask(workersURLs[i], splitsPerWorker[i])).Start();
                     Thread.Sleep(2);
                 }
                 catch (Exception e)
@@ -137,13 +121,12 @@ namespace PADIMapNoReduce
             }
         }
 
-        public void doTask(string workerURL, List<int> splits, Thread myThread)
+        public void doTask(string workerURL, List<int> splits)
         {
             IWorker worker = (IWorker)Activator.GetObject(typeof(IWorker), workerURL);
-            worker.doMapTask(splits, workerURL, inputPath, outputPath, code, className, nSplits,myThread);
+            worker.doMapTask(splits, workerURL, inputPath, outputPath, code, className, nSplits);
         }
-
-
+        
         public IList<KeyValuePair<string, string>> processSplit(string mySplitContent, byte[] code, string className)
         {
             if (mySplitContent != "")
@@ -171,11 +154,9 @@ namespace PADIMapNoReduce
             }
         }
 
-
-        public void doMapTask(List<int> splits, string workerURL,string inputPath,string outputPath, byte[] code, string className, int nSplits, Thread myThread)
+        public void doMapTask(List<int> splits, string workerURL,string inputPath,string outputPath, byte[] code, string className, int nSplits)
         {
-            workerThread = myThread;
-            Console.WriteLine("DO MAP TASK --" + workerThread.IsAlive);
+            myThread = Thread.CurrentThread;
             for (int i = 0; i < splits.Count; i++)
             {
                 string mySplitContent = getSplitContent(splits[i], inputPath, nSplits);
@@ -194,56 +175,29 @@ namespace PADIMapNoReduce
 
         public void getStatus() { }
 
-        
-
-        public void slowWorker(int seconds, int workerID)
-        {
+        public void slowWorker(int seconds) {
+            Console.WriteLine("CHONAR");
             TimeSpan t = DateTime.Now.TimeOfDay.Add(new TimeSpan(0, 0, Convert.ToInt32(seconds)));
-            Console.WriteLine("Antes do sleep");
             bool canPass = false;
 
             while (!canPass)
             {
                 try
                 {
-                    if (workerThread.IsAlive)
+                    if (myThread.IsAlive)
                         canPass = true;
                 }
                 catch (NullReferenceException)
                 {
                 }
             }
-
-
-
-                try
-                {
-                    Console.WriteLine("SLOW --" + workerThread.IsAlive);
-                    Console.WriteLine("ANTES DO SUSPEND");
-                    Console.WriteLine("T = " + t);
-
-                    workerThread.Suspend();
-                    Console.WriteLine(Thread.CurrentThread.Equals(workerThread));
-                    Console.WriteLine("NOW = " + DateTime.Now.TimeOfDay);
-                    while (DateTime.Now.TimeOfDay <= t) { Console.Write("."); }
-                    Console.WriteLine("OOOOOO");
-                    workerThread.Resume();
-                    Console.WriteLine("ACORDEI");
-                }
-                catch (NullReferenceException e)
-                { Console.WriteLine(e.StackTrace); }
-
-            
-        }
-
-        public Thread[] getMapThreads() {
-            return mapThreads;
-
-        }
-
-        public override object InitializeLifetimeService()
-        {
-            return null;
+            try
+            {
+                myThread.Suspend();
+                while (DateTime.Now.TimeOfDay <= t) { }
+                myThread.Resume();
+            }
+            catch (Exception e) { Console.WriteLine(e.ToString()); }
         }
 
         public void freezeWorker() { }

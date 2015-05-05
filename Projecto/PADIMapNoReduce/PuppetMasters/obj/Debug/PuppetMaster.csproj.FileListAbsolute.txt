@@ -12,6 +12,20 @@ C:\Users\Ana\Desktop\abril08noite\PADIMapNoReduce\PuppetMasters\obj\Debug\PADIMa
 C:\Users\Ana\Desktop\abril08noite\PADIMapNoReduce\PuppetMasters\obj\Debug\PuppetMaster.csproj.GenerateResource.Cache
 C:\Users\Ana\Desktop\abril08noite\PADIMapNoReduce\PuppetMasters\obj\Debug\PuppetMasters.exe
 C:\Users\Ana\Desktop\abril08noite\PADIMapNoReduce\PuppetMasters\obj\Debug\PuppetMasters.pdb
+C:\Users\Pedro Raminhas\Desktop\PADIMapNoReduce\PuppetMasters\bin\Debug\PuppetMasters.exe.config
+C:\Users\Pedro Raminhas\Desktop\PADIMapNoReduce\PuppetMasters\obj\Debug\PuppetMasters.exe
+C:\Users\Pedro Raminhas\Desktop\PADIMapNoReduce\PuppetMasters\obj\Debug\PuppetMasters.pdb
+C:\Users\Pedro Raminhas\Desktop\PADIMapNoReduce\PuppetMasters\bin\Debug\PuppetMasters.exe
+C:\Users\Pedro Raminhas\Desktop\PADIMapNoReduce\PuppetMasters\bin\Debug\PuppetMasters.pdb
+C:\Users\Pedro Raminhas\Desktop\PADIMapNoReduce\PuppetMasters\bin\Debug\Client.exe
+C:\Users\Pedro Raminhas\Desktop\PADIMapNoReduce\PuppetMasters\bin\Debug\LibPADIMapNoReduce.dll
+C:\Users\Pedro Raminhas\Desktop\PADIMapNoReduce\PuppetMasters\bin\Debug\Server.exe
+C:\Users\Pedro Raminhas\Desktop\PADIMapNoReduce\PuppetMasters\bin\Debug\Client.pdb
+C:\Users\Pedro Raminhas\Desktop\PADIMapNoReduce\PuppetMasters\bin\Debug\LibPADIMapNoReduce.pdb
+C:\Users\Pedro Raminhas\Desktop\PADIMapNoReduce\PuppetMasters\bin\Debug\Server.pdb
+C:\Users\Pedro Raminhas\Desktop\PADIMapNoReduce\PuppetMasters\obj\Debug\PuppetMaster.csprojResolveAssemblyReference.cache
+C:\Users\Pedro Raminhas\Desktop\PADIMapNoReduce\PuppetMasters\obj\Debug\PADIMapNoReduce.GUI.resources
+C:\Users\Pedro Raminhas\Desktop\PADIMapNoReduce\PuppetMasters\obj\Debug\PuppetMaster.csproj.GenerateResource.Cache
 C:\Users\Ana\Desktop\randomicalyspeaking\PADIMapNoReduce\PuppetMasters\bin\Debug\PuppetMasters.exe.config
 C:\Users\Ana\Desktop\randomicalyspeaking\PADIMapNoReduce\PuppetMasters\obj\Debug\PuppetMasters.exe
 C:\Users\Ana\Desktop\randomicalyspeaking\PADIMapNoReduce\PuppetMasters\obj\Debug\PuppetMasters.pdb
@@ -41,6 +55,8 @@ C:\Users\Pedro Raminhas\Desktop\randomicalyspeaking\PADIMapNoReduce\PuppetMaster
 C:\Users\Pedro Raminhas\Desktop\randomicalyspeaking\PADIMapNoReduce\PuppetMasters\obj\Debug\PADIMapNoReduce.GUI.resources
 C:\Users\Pedro Raminhas\Desktop\randomicalyspeaking\PADIMapNoReduce\PuppetMasters\obj\Debug\PuppetMaster.csproj.GenerateResource.Cache
 C:\Users\Ana\Desktop\PADIMapNoReduce\PuppetMasters\bin\Debug\PuppetMasters.exe.config
+C:\Users\Ana\Desktop\PADIMapNoReduce\PuppetMasters\obj\Debug\PuppetMasters.exe
+C:\Users\Ana\Desktop\PADIMapNoReduce\PuppetMasters\obj\Debug\PuppetMasters.pdb
 C:\Users\Ana\Desktop\PADIMapNoReduce\PuppetMasters\bin\Debug\PuppetMasters.exe
 C:\Users\Ana\Desktop\PADIMapNoReduce\PuppetMasters\bin\Debug\PuppetMasters.pdb
 C:\Users\Ana\Desktop\PADIMapNoReduce\PuppetMasters\bin\Debug\Client.exe
@@ -52,19 +68,17 @@ C:\Users\Ana\Desktop\PADIMapNoReduce\PuppetMasters\bin\Debug\Server.pdb
 C:\Users\Ana\Desktop\PADIMapNoReduce\PuppetMasters\obj\Debug\PuppetMaster.csprojResolveAssemblyReference.cache
 C:\Users\Ana\Desktop\PADIMapNoReduce\PuppetMasters\obj\Debug\PADIMapNoReduce.GUI.resources
 C:\Users\Ana\Desktop\PADIMapNoReduce\PuppetMasters\obj\Debug\PuppetMaster.csproj.GenerateResource.Cache
-C:\Users\Ana\Desktop\PADIMapNoReduce\PuppetMasters\obj\Debug\PuppetMasters.exe
-C:\Users\Ana\Desktop\PADIMapNoReduce\PuppetMasters\obj\Debug\PuppetMasters.pdb
-C:\Users\Pedro Raminhas\Desktop\PADIMapNoReduce\PuppetMasters\bin\Debug\PuppetMasters.exe.config
-C:\Users\Pedro Raminhas\Desktop\PADIMapNoReduce\PuppetMasters\bin\Debug\PuppetMasters.exe
-C:\Users\Pedro Raminhas\Desktop\PADIMapNoReduce\PuppetMasters\bin\Debug\PuppetMasters.pdb
-C:\Users\Pedro Raminhas\Desktop\PADIMapNoReduce\PuppetMasters\bin\Debug\Client.exe
-C:\Users\Pedro Raminhas\Desktop\PADIMapNoReduce\PuppetMasters\bin\Debug\LibPADIMapNoReduce.dll
-C:\Users\Pedro Raminhas\Desktop\PADIMapNoReduce\PuppetMasters\bin\Debug\Server.exe
-C:\Users\Pedro Raminhas\Desktop\PADIMapNoReduce\PuppetMasters\bin\Debug\Client.pdb
-C:\Users\Pedro Raminhas\Desktop\PADIMapNoReduce\PuppetMasters\bin\Debug\LibPADIMapNoReduce.pdb
-C:\Users\Pedro Raminhas\Desktop\PADIMapNoReduce\PuppetMasters\bin\Debug\Server.pdb
-C:\Users\Pedro Raminhas\Desktop\PADIMapNoReduce\PuppetMasters\obj\Debug\PuppetMaster.csprojResolveAssemblyReference.cache
-C:\Users\Pedro Raminhas\Desktop\PADIMapNoReduce\PuppetMasters\obj\Debug\PADIMapNoReduce.GUI.resources
-C:\Users\Pedro Raminhas\Desktop\PADIMapNoReduce\PuppetMasters\obj\Debug\PuppetMaster.csproj.GenerateResource.Cache
-C:\Users\Pedro Raminhas\Desktop\PADIMapNoReduce\PuppetMasters\obj\Debug\PuppetMasters.exe
-C:\Users\Pedro Raminhas\Desktop\PADIMapNoReduce\PuppetMasters\obj\Debug\PuppetMasters.pdb
+C:\Users\Pedro Raminhas\Desktop\pergaminho dos deuses\PADIMapNoReduce\PuppetMasters\bin\Debug\PuppetMasters.exe.config
+C:\Users\Pedro Raminhas\Desktop\pergaminho dos deuses\PADIMapNoReduce\PuppetMasters\obj\Debug\PuppetMasters.exe
+C:\Users\Pedro Raminhas\Desktop\pergaminho dos deuses\PADIMapNoReduce\PuppetMasters\obj\Debug\PuppetMasters.pdb
+C:\Users\Pedro Raminhas\Desktop\pergaminho dos deuses\PADIMapNoReduce\PuppetMasters\bin\Debug\PuppetMasters.exe
+C:\Users\Pedro Raminhas\Desktop\pergaminho dos deuses\PADIMapNoReduce\PuppetMasters\bin\Debug\PuppetMasters.pdb
+C:\Users\Pedro Raminhas\Desktop\pergaminho dos deuses\PADIMapNoReduce\PuppetMasters\bin\Debug\Client.exe
+C:\Users\Pedro Raminhas\Desktop\pergaminho dos deuses\PADIMapNoReduce\PuppetMasters\bin\Debug\LibPADIMapNoReduce.dll
+C:\Users\Pedro Raminhas\Desktop\pergaminho dos deuses\PADIMapNoReduce\PuppetMasters\bin\Debug\Server.exe
+C:\Users\Pedro Raminhas\Desktop\pergaminho dos deuses\PADIMapNoReduce\PuppetMasters\bin\Debug\Client.pdb
+C:\Users\Pedro Raminhas\Desktop\pergaminho dos deuses\PADIMapNoReduce\PuppetMasters\bin\Debug\LibPADIMapNoReduce.pdb
+C:\Users\Pedro Raminhas\Desktop\pergaminho dos deuses\PADIMapNoReduce\PuppetMasters\bin\Debug\Server.pdb
+C:\Users\Pedro Raminhas\Desktop\pergaminho dos deuses\PADIMapNoReduce\PuppetMasters\obj\Debug\PuppetMaster.csprojResolveAssemblyReference.cache
+C:\Users\Pedro Raminhas\Desktop\pergaminho dos deuses\PADIMapNoReduce\PuppetMasters\obj\Debug\PADIMapNoReduce.GUI.resources
+C:\Users\Pedro Raminhas\Desktop\pergaminho dos deuses\PADIMapNoReduce\PuppetMasters\obj\Debug\PuppetMaster.csproj.GenerateResource.Cache

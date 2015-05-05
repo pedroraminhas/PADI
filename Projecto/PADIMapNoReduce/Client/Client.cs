@@ -62,74 +62,49 @@ namespace PADIMapNoReduce {
         public string getSplitContent(int splitNumber, string inputPath, int nSplits) {
             Console.WriteLine("CHEGUEI E QUERO O SPLIT " + splitNumber);
             
-                int nLines;
-                int linesToRead;
+            int nLines;
+            int linesToRead;
 
-                if (nFileLines.ContainsKey(inputPath))
+            if (nFileLines.ContainsKey(inputPath))
+            {
+                nLines = nFileLines[inputPath];
+            }
+            else
+            {
+                nLines = File.ReadAllLines(@inputPath).Length;
+                nFileLines.Add(inputPath, nLines);
+            }
+
+            int nLinesPerSplit = nLines / nSplits;
+            int remainingLines = nLines % nSplits;
+
+            int start = splitNumber * nLinesPerSplit;
+
+            using (var sr = new StreamReader(inputPath))
+            {
+                string[] linesContent = File.ReadAllLines(@inputPath);
+
+                if (splitNumber == (nSplits - 1))
                 {
-                    nLines = nFileLines[inputPath];
+                    linesToRead = nLinesPerSplit + remainingLines;
                 }
                 else
                 {
-                    nLines = File.ReadAllLines(@inputPath).Length;
-                    nFileLines.Add(inputPath, nLines);
+                    linesToRead = nLinesPerSplit;
                 }
 
-               /* int nLinesPerSplit;
-                if (nLines % nSplits == 0)
+                if (linesToRead != 0)
                 {
-                    nLinesPerSplit = nLines / nSplits;
+                    string[] mySplitContent = new string[linesToRead];
+                    Array.Copy(linesContent, start, mySplitContent, 0, linesToRead);
+                    Console.WriteLine("MY SPLIT = " + string.Join(" ", mySplitContent));
+                    return string.Join(" ", mySplitContent);
                 }
                 else
                 {
-                    nLinesPerSplit = nLines / nSplits + 1;
-                }*/
-
-                int nLinesPerSplit = nLines / nSplits;
-                int remainingLines = nLines % nSplits;
-
-                int start = splitNumber * nLinesPerSplit;
-                Console.WriteLine("START = " + start);
-                //int last = splitNumber * nLinesPerSplit + nLinesPerSplit - 1;
-
-                using (var sr = new StreamReader(inputPath))
-                {
-                    string[] linesContent = File.ReadAllLines(@inputPath);
-
-                    if (splitNumber == (nSplits - 1))
-                    {
-                        linesToRead = nLinesPerSplit + remainingLines;
-                    }
-                    else
-                    {
-                        linesToRead = nLinesPerSplit;
-                    }
-
-                   /* if (start + nLinesPerSplit > linesContent.Length)
-                    {
-                        linesToRead = linesContent.Length - start;
-                    }
-                    else
-                    {
-                        linesToRead = nLinesPerSplit;
-                    }*/
-
-                    Console.WriteLine("Linhas que ira ler " + linesToRead + "o split " + splitNumber);
-                    Console.WriteLine("NSPLITS " + nSplits);
-
-                    if (linesToRead != 0)
-                    {
-                        string[] mySplitContent = new string[linesToRead];
-                        Array.Copy(linesContent, start, mySplitContent, 0, linesToRead);
-                        Console.WriteLine("MY SPLIT = " + string.Join(" ", mySplitContent));
-                        return string.Join(" ", mySplitContent);
-                    }
-                    else
-                    {
-                        return "";
-                    }
+                    return "";
                 }
-                
+            }
         }
 
         public void sendResult(IList<KeyValuePair<string, string>> result, string outputPath, string splitIdentifier) {
@@ -146,13 +121,5 @@ namespace PADIMapNoReduce {
                 }
             }
         }
-
-        public override object InitializeLifetimeService()
-        {
-
-            return null;
-
-        }
-
     }
 }
