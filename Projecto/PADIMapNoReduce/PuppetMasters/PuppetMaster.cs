@@ -78,7 +78,6 @@ namespace PADIMapNoReduce
                     Thread threadSubmit = new Thread(() => submit());
                     threadSubmit.Start();
                     Thread.Sleep(1);
-                    //submit();
                     break;
                 case "WAIT":
                     wait();
@@ -87,9 +86,8 @@ namespace PADIMapNoReduce
                     getStatus();
                     break;
                 case "SLOWW":
-                    Thread threadSloWWorker = new Thread(() => slowWorker(workers,splittedInstruction));
-                    threadSloWWorker.Start();
-                    Thread.Sleep(2);
+                    new Thread(() => slowWorker(workers,splittedInstruction)).Start();
+                    Thread.Sleep(1);
                     break;
                 case "FREEZEW":
                     new Thread(() => freezeWorker()).Start();
@@ -188,7 +186,14 @@ namespace PADIMapNoReduce
         private static void unfreezeWorker()
         {
             IWorker target = (IWorker)Activator.GetObject(typeof(IWorker), workers[splittedInstruction[1]]);
-            target.unfreezeWorker();
+            try
+            {
+                target.unfreezeWorker();
+            }
+            catch (SocketException)
+            {
+                Console.WriteLine("UNFREEZE!");
+            }
         }
 
         private static void freezeJobTracker()

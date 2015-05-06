@@ -187,10 +187,9 @@ namespace PADIMapNoReduce
                     if (myThread.IsAlive)
                         canPass = true;
                 }
-                catch (NullReferenceException)
-                {
-                }
+                catch (NullReferenceException){ }
             }
+
             try
             {
                 myThread.Suspend();
@@ -217,16 +216,21 @@ namespace PADIMapNoReduce
 
         public void unfreezeWorker()
         {
-            Console.WriteLine("UNFREEZE!");
-            TcpChannel channel = (TcpChannel)ChannelServices.GetChannel("tcp");
-            channel.StartListening(null);
             try
             {
+                Console.WriteLine("UNFREEZE!");
+                TcpChannel channel = (TcpChannel)ChannelServices.GetChannel("tcp");
+                channel.StartListening(null);
                 myThread.Resume();
             }
             catch (NullReferenceException)
             {
-                // If it reaches this point, it means there wass no job being done and we don't resume it.
+                // If it reaches this point, it means there was no job being done and we don't resume it.
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                Console.WriteLine(e.StackTrace);
             }
         }
 
