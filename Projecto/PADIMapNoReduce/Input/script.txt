@@ -5,5 +5,5 @@ WORKER 1 tcp://localhost:20001/PM tcp://localhost:30001/W
 %WORKER 5 tcp://localhost:20003/PM tcp://localhost:30005/W tcp://localhost:30001/W
 %WORKER 6 tcp://localhost:20003/PM tcp://localhost:30006/W tcp://localhost:30001/W
 SUBMIT tcp://localhost:30001/W ..\..\..\Input\test.txt ..\..\..\result\ 6 Mapper ..\..\..\LibMapper\bin\Debug\LibMapper.dll
-%FREEZEW 1
-SUBMIT tcp://localhost:30001/W ..\..\..\Input\test.txt ..\..\..\result\ 6 Mapper ..\..\..\LibMapper\bin\Debug\LibMapper.dll
+FREEZEW 1
+UNFREEZEW 1

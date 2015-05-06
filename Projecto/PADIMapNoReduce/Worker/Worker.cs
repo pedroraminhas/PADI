@@ -202,11 +202,35 @@ namespace PADIMapNoReduce
 
         public void freezeWorker()
         {
-            TcpChannel channel = (TcpChannel) ChannelServices.GetChannel("tcp");
-            Console.WriteLine(channel.ChannelName);
+            Console.WriteLine("FREEZE!");
+            TcpChannel channel = (TcpChannel)ChannelServices.GetChannel("tcp");
             channel.StopListening(null);
+            try
+            {
+                myThread.Suspend();
+            }
+            catch (NullReferenceException)
+            {
+                // If it reaches this point, it means there is no job being done and we don't suspend it.
+            }
         }
-        public void unfreezeWorker() { }
+
+        public void unfreezeWorker()
+        {
+            Console.WriteLine("UNFREEZE!");
+            TcpChannel channel = (TcpChannel)ChannelServices.GetChannel("tcp");
+            channel.StartListening(null);
+            try
+            {
+                myThread.Resume();
+            }
+            catch (NullReferenceException)
+            {
+                // If it reaches this point, it means there wass no job being done and we don't resume it.
+            }
+        }
+
+
         public void freezeJobTracker() { }
         public void unfreezeJobTracker() { }
     }

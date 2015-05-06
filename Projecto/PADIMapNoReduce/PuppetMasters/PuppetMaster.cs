@@ -76,8 +76,9 @@ namespace PADIMapNoReduce
                     break;
                 case "SUBMIT":
                     Thread threadSubmit = new Thread(() => submit());
-                    submit();
+                    threadSubmit.Start();
                     Thread.Sleep(1);
+                    //submit();
                     break;
                 case "WAIT":
                     wait();
@@ -91,10 +92,12 @@ namespace PADIMapNoReduce
                     Thread.Sleep(2);
                     break;
                 case "FREEZEW":
-                    freezeWorker();
+                    new Thread(() => freezeWorker()).Start();
+                    Thread.Sleep(1);
                     break;
                 case "UNFREEZEW":
-                    unfreezeWorker();
+                    new Thread(() => unfreezeWorker()).Start();
+                    Thread.Sleep(1);
                     break;
                 case "FREEZEC":
                     freezeJobTracker();
