@@ -6,7 +6,7 @@ namespace PADIMapNoReduce {
     }
 
     public interface IMapperTransfer {
-        bool submit(string inputPath, int nSplits, string outputPath, string className, byte[] code);
+        bool submit(string inputPath, int nSplits, string outputPath, string className, byte[] code, int port);
     }
 
     public interface IWorker : IMapperTransfer {

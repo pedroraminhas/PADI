@@ -15,16 +15,16 @@ namespace PADIMapNoReduce {
         private static int nSplits;
         private static string mapperName;
         private static string dllPath;
+        private static int port;
 
         static void Main(string[] args) {
-            int port = 10001;
             jobTrackerURL = args[1];
             inputPath = args[2];
             outputPath = args[3];
             nSplits = int.Parse(args[4]);
             mapperName = args[5];
             dllPath = args[6];
-            
+            port = int.Parse(args[7]);
             TcpChannel channel = new TcpChannel(port);
             ChannelServices.RegisterChannel(channel, true);
             RemotingConfiguration.RegisterWellKnownServiceType(typeof(ClientServices), "C", WellKnownObjectMode.Singleton);
@@ -43,14 +43,14 @@ namespace PADIMapNoReduce {
                 {
                     File.Delete(f);
                 }
-                Console.WriteLine(jobTracker.submit(inputPath, nSplits, outputPath, mapperName, code));
+                Console.WriteLine(jobTracker.submit(inputPath, nSplits, outputPath, mapperName, code, port));
             }
             catch (SocketException)
             {
                 Console.WriteLine("Could not locate server");
             }
             catch (DirectoryNotFoundException) {
-                Console.WriteLine(jobTracker.submit(inputPath, nSplits, outputPath, mapperName, code));
+                Console.WriteLine(jobTracker.submit(inputPath, nSplits, outputPath, mapperName, code, port));
             }
             Console.ReadLine();
         }

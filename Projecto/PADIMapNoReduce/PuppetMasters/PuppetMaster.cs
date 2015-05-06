@@ -75,7 +75,9 @@ namespace PADIMapNoReduce
                     startWorker(splittedInstruction);
                     break;
                 case "SUBMIT":
+                    Thread threadSubmit = new Thread(() => submit());
                     submit();
+                    Thread.Sleep(1);
                     break;
                 case "WAIT":
                     wait();
@@ -116,6 +118,7 @@ namespace PADIMapNoReduce
             if (targetPuppetMasterURL.Equals(puppetMasterURL))
             {
                 if (workerInfo.Length == 4)
+
                 {
                     Process.Start(@"..\..\..\Worker\bin\Debug\Server.exe", serviceURL);
                     Console.WriteLine("INICIEI O JOB TRACKER " + serviceURL);
@@ -138,8 +141,14 @@ namespace PADIMapNoReduce
         }
 
         public static void submit()
-        {            
-            Process.Start(@"..\..\..\Client\bin\Debug\Client.exe", String.Join(" ", splittedInstruction));
+        {
+            Random r = new Random();
+            int clientPort = r.Next(10001, 20000);
+
+            string parameters = String.Join(" ", splittedInstruction) + " " + clientPort;
+            Console.WriteLine(parameters);
+
+            Process.Start(@"..\..\..\Client\bin\Debug\Client.exe", parameters);
         }
 
         public static void wait()

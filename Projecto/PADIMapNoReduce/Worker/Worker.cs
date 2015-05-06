@@ -44,34 +44,33 @@ namespace PADIMapNoReduce
 
     internal class WorkerServices : MarshalByRefObject, IWorker {
         List<string> workersURLs = new List<string>();
+        //Dictionary<string, TcpChannel> workersChannels = new Dictionary<string, TcpChannel>();
         string inputPath;
         int nSplits;
         string outputPath;
         string className;
         byte[] code;
+        int clientPort;
         Thread myThread;
-
-        IClient client = (IClient)Activator.GetObject(typeof(IClient), "tcp://localhost:10001/C");
         List<int>[] splitsPerWorker;
         
         public void notify(string workerURL)
         {
             workersURLs.Add(workerURL);
+            //workersChannels[workerURL] = channel;
         }
 
-        public bool submit(string myInputPath, int numSplits, string myOutputPath, string myClassName, byte[] myCode) {
+        public bool submit(string myInputPath, int numSplits, string myOutputPath, string myClassName, byte[] myCode, int port) {
             myThread = Thread.CurrentThread;
             inputPath = myInputPath;
             nSplits = numSplits;
             outputPath = myOutputPath;
             className = myClassName;
             code = myCode;
+            clientPort = port;
             splitsPerWorker = splitFile();
-            Console.WriteLine("FAZER ASSIGN");
             assignMapTask();
-            Console.WriteLine("FAZER TASK");
             doMapTask(splitsPerWorker[0], workersURLs[0], inputPath, outputPath, code, className, nSplits);
-            Console.WriteLine("FIZ TASK");
             return true;
         }
 
@@ -95,6 +94,7 @@ namespace PADIMapNoReduce
             string content = null;
             
             try {
+                IClient client = (IClient)Activator.GetObject(typeof(IClient), "tcp://localhost:" + clientPort + "/C");
                 content = client.getSplitContent(split, inputPath, nSplits);
             }
             catch (SocketException) {
@@ -163,6 +163,7 @@ namespace PADIMapNoReduce
                 IList<KeyValuePair<string, string>> result = processSplit(mySplitContent, code, className);
                 try
                 {
+                    IClient client = (IClient)Activator.GetObject(typeof(IClient), "tcp://localhost:" + clientPort + "/C");
                     client.sendResult(result, outputPath, splits[i] + ".out");
                     Console.WriteLine("WORKER " + workerURL + " FINISHED " + splits[i]);
                 }
@@ -176,7 +177,6 @@ namespace PADIMapNoReduce
         public void getStatus() { }
 
         public void slowWorker(int seconds) {
-            Console.WriteLine("CHONAR");
             TimeSpan t = DateTime.Now.TimeOfDay.Add(new TimeSpan(0, 0, Convert.ToInt32(seconds)));
             bool canPass = false;
 
@@ -200,7 +200,12 @@ namespace PADIMapNoReduce
             catch (Exception e) { Console.WriteLine(e.ToString()); }
         }
 
-        public void freezeWorker() { }
+        public void freezeWorker()
+        {
+            TcpChannel channel = (TcpChannel) ChannelServices.GetChannel("tcp");
+            Console.WriteLine(channel.ChannelName);
+            channel.StopListening(null);
+        }
         public void unfreezeWorker() { }
         public void freezeJobTracker() { }
         public void unfreezeJobTracker() { }
