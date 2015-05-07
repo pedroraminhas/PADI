@@ -43,34 +43,31 @@ namespace PADIMapNoReduce
     }
 
     internal class WorkerServices : MarshalByRefObject, IWorker {
+        Thread myThread;
         List<string> workersURLs = new List<string>();
-        //Dictionary<string, TcpChannel> workersChannels = new Dictionary<string, TcpChannel>();
         string inputPath;
         int nSplits;
         string outputPath;
         string className;
         byte[] code;
-        int clientPort;
-        Thread myThread;
         List<int>[] splitsPerWorker;
         
         public void notify(string workerURL)
         {
             workersURLs.Add(workerURL);
-            //workersChannels[workerURL] = channel;
         }
 
-        public bool submit(string myInputPath, int numSplits, string myOutputPath, string myClassName, byte[] myCode, int port) {
+        public bool submit(string myInputPath, int numSplits, string myOutputPath, string myClassName, byte[] myCode, int clientPort) {
             myThread = Thread.CurrentThread;
             inputPath = myInputPath;
             nSplits = numSplits;
             outputPath = myOutputPath;
             className = myClassName;
             code = myCode;
-            clientPort = port;
+            Console.WriteLine("O PORT RECEBIDO NO SUBMIT DO WORKER E " + clientPort);
             splitsPerWorker = splitFile();
-            assignMapTask();
-            doMapTask(splitsPerWorker[0], workersURLs[0], inputPath, outputPath, code, className, nSplits);
+            assignMapTask(clientPort);
+            doMapTask(splitsPerWorker[0], workersURLs[0], inputPath, outputPath, code, className, nSplits, clientPort);
             return true;
         }
 
@@ -90,9 +87,9 @@ namespace PADIMapNoReduce
             return splitsPerWorker;
         }
 
-        public string getSplitContent(int split, string inputPath, int nSplits) {
+        public string getSplitContent(int split, string inputPath, int nSplits, int clientPort) {
             string content = null;
-            
+            Console.WriteLine("O PORT QUE VEJO NO GETSPLITCONTENT E " + clientPort);
             try {
                 IClient client = (IClient)Activator.GetObject(typeof(IClient), "tcp://localhost:" + clientPort + "/C");
                 content = client.getSplitContent(split, inputPath, nSplits);
@@ -104,15 +101,15 @@ namespace PADIMapNoReduce
             return content;
         }
 
-        public void assignMapTask() {
+        public void assignMapTask(int clientPort) {
             Console.WriteLine("N WORKERS = " + workersURLs.Count);
             for (int i = 1; i < workersURLs.Count; i++)
             {
                 Console.WriteLine("WORKER URL = " + workersURLs[i]);
                 try
                 {
-                    new Thread(() => doTask(workersURLs[i], splitsPerWorker[i])).Start();
-                    Thread.Sleep(2);
+                    new Thread(() => doTask(workersURLs[i], splitsPerWorker[i], clientPort)).Start();
+                    Thread.Sleep(1);
                 }
                 catch (Exception e)
                 {
@@ -121,10 +118,18 @@ namespace PADIMapNoReduce
             }
         }
 
-        public void doTask(string workerURL, List<int> splits)
+        public void doTask(string workerURL, List<int> splits, int clientPort)
         {
-            IWorker worker = (IWorker)Activator.GetObject(typeof(IWorker), workerURL);
-            worker.doMapTask(splits, workerURL, inputPath, outputPath, code, className, nSplits);
+            try
+            {
+                IWorker worker = (IWorker)Activator.GetObject(typeof(IWorker), workerURL);
+                worker.doMapTask(splits, workerURL, inputPath, outputPath, code, className, nSplits, clientPort);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                Console.WriteLine(e.StackTrace);
+            }
         }
         
         public IList<KeyValuePair<string, string>> processSplit(string mySplitContent, byte[] code, string className)
@@ -154,15 +159,16 @@ namespace PADIMapNoReduce
             }
         }
 
-        public void doMapTask(List<int> splits, string workerURL,string inputPath,string outputPath, byte[] code, string className, int nSplits)
+        public void doMapTask(List<int> splits, string workerURL,string inputPath,string outputPath, byte[] code, string className, int nSplits, int clientPort)
         {
             myThread = Thread.CurrentThread;
             for (int i = 0; i < splits.Count; i++)
             {
-                string mySplitContent = getSplitContent(splits[i], inputPath, nSplits);
+                string mySplitContent = getSplitContent(splits[i], inputPath, nSplits, clientPort);
                 IList<KeyValuePair<string, string>> result = processSplit(mySplitContent, code, className);
                 try
                 {
+                    Console.WriteLine("SOU O " + workerURL + " E O PORT QUE VEJO NO DOMAPTASK E " + clientPort);
                     IClient client = (IClient)Activator.GetObject(typeof(IClient), "tcp://localhost:" + clientPort + "/C");
                     client.sendResult(result, outputPath, splits[i] + ".out");
                     Console.WriteLine("WORKER " + workerURL + " FINISHED " + splits[i]);
@@ -212,25 +218,25 @@ namespace PADIMapNoReduce
             {
                 // If it reaches this point, it means there is no job being done and we don't suspend it.
             }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                Console.WriteLine(e.StackTrace);
+            }
         }
 
         public void unfreezeWorker()
         {
+            Console.WriteLine("UNFREEZE!");
+            TcpChannel channel = (TcpChannel)ChannelServices.GetChannel("tcp");
+            channel.StartListening(null);
             try
             {
-                Console.WriteLine("UNFREEZE!");
-                TcpChannel channel = (TcpChannel)ChannelServices.GetChannel("tcp");
-                channel.StartListening(null);
                 myThread.Resume();
             }
             catch (NullReferenceException)
             {
                 // If it reaches this point, it means there was no job being done and we don't resume it.
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.Message);
-                Console.WriteLine(e.StackTrace);
             }
         }
 

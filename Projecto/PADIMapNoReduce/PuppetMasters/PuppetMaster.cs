@@ -75,9 +75,7 @@ namespace PADIMapNoReduce
                     startWorker(splittedInstruction);
                     break;
                 case "SUBMIT":
-                    Thread threadSubmit = new Thread(() => submit());
-                    threadSubmit.Start();
-                    Thread.Sleep(1);
+                    submit();
                     break;
                 case "WAIT":
                     wait();
@@ -86,7 +84,7 @@ namespace PADIMapNoReduce
                     getStatus();
                     break;
                 case "SLOWW":
-                    new Thread(() => slowWorker(workers,splittedInstruction)).Start();
+                    new Thread(() => slowWorker()).Start();
                     Thread.Sleep(1);
                     break;
                 case "FREEZEW":
@@ -112,32 +110,31 @@ namespace PADIMapNoReduce
         
         /* If the PuppetMaster URL in the instruction is this PuppetMasters's URL, creates the worker;
          * Else, does a remote call to the wanted PuppetMaster URL so it creates the worker. */
-        public static void startWorker(string[] workerInfo)
+        public static void startWorker(string[] splittedInstruction)
         {
-            string targetPuppetMasterURL = workerInfo[2];
-            string serviceURL = workerInfo[3];
+            string targetPuppetMasterURL = splittedInstruction[2];
+            string serviceURL = splittedInstruction[3];
             if (targetPuppetMasterURL.Equals(puppetMasterURL))
             {
-                if (workerInfo.Length == 4)
+                if (splittedInstruction.Length == 4)
 
                 {
                     Process.Start(@"..\..\..\Worker\bin\Debug\Server.exe", serviceURL);
-                    Console.WriteLine("INICIEI O JOB TRACKER " + serviceURL);
+                    Console.WriteLine("STARTED THE JOB TRACKER AT " + serviceURL);
                 }
                 else
                 {
-                    string entryURL = workerInfo[4];
+                    string entryURL = splittedInstruction[4];
                     Process.Start(@"..\..\..\Worker\bin\Debug\Server.exe", serviceURL + " " + entryURL);
-                    Console.WriteLine("INICIEI O WORKER " + serviceURL);
+                    Console.WriteLine("STARTED A WORKER AT " + serviceURL);
                 }
-                string workerID = workerInfo[1];
-                workers.Add(workerID, serviceURL);
+                workers.Add(splittedInstruction[1], serviceURL);
             }
             else
             {
-                Console.WriteLine("VOU PEDIR AO " + targetPuppetMasterURL + "PARA CRIAR O " + serviceURL);
+                Console.WriteLine("ASKING THE PUPPET MASTER AT " + targetPuppetMasterURL + " TO CREATE A WORKER AT " + serviceURL);
                 IPuppetMasters puppetMaster = (IPuppetMasters)Activator.GetObject(typeof(IWorker), targetPuppetMasterURL);
-                puppetMaster.startWorker(workerInfo);
+                puppetMaster.startWorker(splittedInstruction);
             }
         }
 
@@ -145,11 +142,8 @@ namespace PADIMapNoReduce
         {
             Random r = new Random();
             int clientPort = r.Next(10001, 20000);
-
-            string parameters = String.Join(" ", splittedInstruction) + " " + clientPort;
-            Console.WriteLine(parameters);
-
-            Process.Start(@"..\..\..\Client\bin\Debug\Client.exe", parameters);
+            Process.Start(@"..\..\..\Client\bin\Debug\Client.exe", String.Join(" ", splittedInstruction) + " " + clientPort);
+            Console.WriteLine("SENDING A JOB FROM " + clientPort);
         }
 
         public static void wait()
@@ -166,33 +160,42 @@ namespace PADIMapNoReduce
             }
         }
 
-        private static void slowWorker(Dictionary<string, string> workers, string[] splittedInstruction)
+        private static void slowWorker()
         {
-            string workerID = splittedInstruction[1];
-
-            Console.WriteLine("Existem este numero de workers " + workers.Count);
-            Console.WriteLine(splittedInstruction[0]);
-            Console.WriteLine("ID do worker " + workerID);
-            IWorker target = (IWorker)Activator.GetObject(typeof(IWorker), workers[workerID]);
-            target.slowWorker(Convert.ToInt32(splittedInstruction[2]));
+            try
+            {
+                IWorker target = (IWorker)Activator.GetObject(typeof(IWorker), workers[splittedInstruction[1]]);
+                target.slowWorker(Convert.ToInt32(splittedInstruction[2]));
+            }
+            catch (SocketException e)
+            {
+                Console.WriteLine(e.Message);
+            }
         }
 
         private static void freezeWorker()
         {
-            IWorker target = (IWorker)Activator.GetObject(typeof(IWorker), workers[splittedInstruction[1]]);
-            target.freezeWorker();
+            try
+            {
+                IWorker target = (IWorker)Activator.GetObject(typeof(IWorker), workers[splittedInstruction[1]]);
+                target.freezeWorker();
+            }
+            catch (SocketException e)
+            {
+                Console.WriteLine(e.Message);
+            }
         }
 
         private static void unfreezeWorker()
         {
-            IWorker target = (IWorker)Activator.GetObject(typeof(IWorker), workers[splittedInstruction[1]]);
             try
             {
+                IWorker target = (IWorker)Activator.GetObject(typeof(IWorker), workers[splittedInstruction[1]]);
                 target.unfreezeWorker();
             }
-            catch (SocketException)
+            catch (SocketException e)
             {
-                Console.WriteLine("UNFREEZE!");
+                Console.WriteLine(e.Message);
             }
         }
 
