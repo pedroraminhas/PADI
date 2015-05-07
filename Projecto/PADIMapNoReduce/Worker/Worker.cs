@@ -28,14 +28,14 @@ namespace PADIMapNoReduce
                 string entryURL = args[1];
                 IWorker jobTracker = (IWorker)Activator.GetObject(typeof(IWorker), entryURL);
                 string workerURL = args[0];
-                jobTracker.notify(workerURL);
+                jobTracker.notify(workerURL, false);
             }
             //if it's a job tracker, adds itself to the list of workers
             else
             {
                 string entryURL = args[0];
                 IWorker jobTracker = (IWorker)Activator.GetObject(typeof(IWorker), entryURL);
-                jobTracker.notify(entryURL);
+                jobTracker.notify(entryURL, true);
             }
             System.Console.WriteLine("Press <enter> to terminate server...");
             System.Console.ReadLine();
@@ -43,18 +43,27 @@ namespace PADIMapNoReduce
     }
 
     internal class WorkerServices : MarshalByRefObject, IWorker {
+        private string myURL;
+        private string WORKER_IDLE = "IDLE";
+        private string WORKER_UNAVAILABLE = "UNAVAILABLE";
+
         Thread myThread;
         List<string> workersURLs = new List<string>();
+        Dictionary<string, string> workersStatus = new Dictionary<string, string>();
         string inputPath;
         int nSplits;
         string outputPath;
         string className;
         byte[] code;
-        List<int>[] splitsPerWorker;
         
-        public void notify(string workerURL)
+        public void notify(string workerURL, bool isJobTracker)
         {
             workersURLs.Add(workerURL);
+            workersStatus.Add(workerURL, WORKER_IDLE);
+            if (isJobTracker)
+            {
+                myURL = workerURL;
+            }
         }
 
         public bool submit(string myInputPath, int numSplits, string myOutputPath, string myClassName, byte[] myCode, int clientPort) {
@@ -64,32 +73,30 @@ namespace PADIMapNoReduce
             outputPath = myOutputPath;
             className = myClassName;
             code = myCode;
-            Console.WriteLine("O PORT RECEBIDO NO SUBMIT DO WORKER E " + clientPort);
-            splitsPerWorker = splitFile();
-            assignMapTask(clientPort);
-            doMapTask(splitsPerWorker[0], workersURLs[0], inputPath, outputPath, code, className, nSplits, clientPort);
+            Dictionary<string, List<int>> splitsPerWorker = splitFile();
+            assignMapTask(splitsPerWorker, clientPort);
             return true;
         }
 
         /* Each worker is given a list of splits, which are distributed in round robin style. */
-        public List<int>[] splitFile() {
-            int nWorkers = workersURLs.Count;
-            List<int>[] splitsPerWorker = new List<int>[nWorkers];
-
+        public Dictionary<string, List<int>> splitFile() {
+            Dictionary<string, List<int>> splitsPerWorker = new Dictionary<string, List<int>>();
+            List<string> availableWorkers = getAvailableWorkers();
+            int nAvailableWorkers = availableWorkers.Count;
             for (int i = 0; i < nSplits; i++)
             {
-                if (splitsPerWorker[i % nWorkers] == null)
-                    splitsPerWorker[i % nWorkers] = new List<int>();
-                splitsPerWorker[i % nWorkers].Add(i);
-                Console.WriteLine("SPLIT " + i + "ASSIGNED TO " + i%nWorkers);
-            }
+                string workerURL = availableWorkers[i%nAvailableWorkers];
+                if (!splitsPerWorker.ContainsKey(workerURL))
+                    splitsPerWorker.Add(workerURL, new List<int>());
 
+                splitsPerWorker[workerURL].Add(i);
+                Console.WriteLine("SPLIT " + i + " ASSIGNED TO " + workerURL);
+            }
             return splitsPerWorker;
         }
 
         public string getSplitContent(int split, string inputPath, int nSplits, int clientPort) {
             string content = null;
-            Console.WriteLine("O PORT QUE VEJO NO GETSPLITCONTENT E " + clientPort);
             try {
                 IClient client = (IClient)Activator.GetObject(typeof(IClient), "tcp://localhost:" + clientPort + "/C");
                 content = client.getSplitContent(split, inputPath, nSplits);
@@ -101,21 +108,51 @@ namespace PADIMapNoReduce
             return content;
         }
 
-        public void assignMapTask(int clientPort) {
-            Console.WriteLine("N WORKERS = " + workersURLs.Count);
-            for (int i = 1; i < workersURLs.Count; i++)
+        public List<string> getAvailableWorkers()
+        {
+            List<String> availableWorkers = new List<string>();
+            foreach (KeyValuePair<string, string> entry in workersStatus)
             {
-                Console.WriteLine("WORKER URL = " + workersURLs[i]);
-                try
+                if (entry.Value.Equals(this.WORKER_IDLE))
                 {
-                    new Thread(() => doTask(workersURLs[i], splitsPerWorker[i], clientPort)).Start();
-                    Thread.Sleep(1);
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine("EXCEPTION CAUGHT " + e.Message);
+                    availableWorkers.Add(entry.Key);
                 }
             }
+            return availableWorkers;
+        }
+
+        public void assignMapTask(Dictionary<string, List<int>> splitsPerWorker, int clientPort)
+        {
+            List<string> availableWorkers = getAvailableWorkers();
+            for (int i = 0; i < availableWorkers.Count; i++)
+            {
+                if (availableWorkers[i].Equals(myURL))
+                {
+                    new Thread(() => doMapTask(splitsPerWorker[myURL], myURL, inputPath, outputPath, code, className, nSplits, clientPort)).Start();
+                }
+                else
+                {
+                    new Thread(() => doTask(availableWorkers[i], splitsPerWorker[availableWorkers[i]], clientPort)).Start();
+                    Thread.Sleep(1);
+                }
+            }
+        }
+
+        public Dictionary<string, List<int>> giveFailedSplits(List<int> splits)
+        {
+            Dictionary<string, List<int>> splitsPerWorker = new Dictionary<string, List<int>>();
+            List<string> availableWorkers = getAvailableWorkers();
+            int nAvailableWorkers = availableWorkers.Count;
+            for (int i = 0; i < splits.Count; i++)
+            {
+                string workerURL = availableWorkers[i % nAvailableWorkers];
+                if (!splitsPerWorker.ContainsKey(workerURL))
+                    splitsPerWorker.Add(workerURL, new List<int>());
+
+                splitsPerWorker[workerURL].Add(splits[i]);
+                Console.WriteLine("SPLIT " + splits[i] + " REASSIGNED TO " + workerURL);
+            }
+            return splitsPerWorker;
         }
 
         public void doTask(string workerURL, List<int> splits, int clientPort)
@@ -125,10 +162,12 @@ namespace PADIMapNoReduce
                 IWorker worker = (IWorker)Activator.GetObject(typeof(IWorker), workerURL);
                 worker.doMapTask(splits, workerURL, inputPath, outputPath, code, className, nSplits, clientPort);
             }
-            catch (Exception e)
+            catch (SocketException)
             {
-                Console.WriteLine(e.Message);
-                Console.WriteLine(e.StackTrace);
+                Console.WriteLine("WORKER " + workerURL + " IS NOT AVAILABLE: REDISTRIBUTING SPLITS...");
+                workersStatus[workerURL] = WORKER_UNAVAILABLE;
+                Dictionary<string, List<int>> remainingSplits = giveFailedSplits(splits);
+                assignMapTask(remainingSplits, clientPort);
             }
         }
         
@@ -168,7 +207,6 @@ namespace PADIMapNoReduce
                 IList<KeyValuePair<string, string>> result = processSplit(mySplitContent, code, className);
                 try
                 {
-                    Console.WriteLine("SOU O " + workerURL + " E O PORT QUE VEJO NO DOMAPTASK E " + clientPort);
                     IClient client = (IClient)Activator.GetObject(typeof(IClient), "tcp://localhost:" + clientPort + "/C");
                     client.sendResult(result, outputPath, splits[i] + ".out");
                     Console.WriteLine("WORKER " + workerURL + " FINISHED " + splits[i]);
@@ -208,6 +246,8 @@ namespace PADIMapNoReduce
         public void freezeWorker()
         {
             Console.WriteLine("FREEZE!");
+
+
             TcpChannel channel = (TcpChannel)ChannelServices.GetChannel("tcp");
             channel.StopListening(null);
             try

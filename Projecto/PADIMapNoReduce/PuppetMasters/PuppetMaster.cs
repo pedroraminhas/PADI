@@ -177,6 +177,7 @@ namespace PADIMapNoReduce
         {
             try
             {
+                Console.WriteLine("FREEZING WORKER " + splittedInstruction[1]);
                 IWorker target = (IWorker)Activator.GetObject(typeof(IWorker), workers[splittedInstruction[1]]);
                 target.freezeWorker();
             }
@@ -190,6 +191,7 @@ namespace PADIMapNoReduce
         {
             try
             {
+                Console.WriteLine("UNFREEZING WORKER " + splittedInstruction[1]);
                 IWorker target = (IWorker)Activator.GetObject(typeof(IWorker), workers[splittedInstruction[1]]);
                 target.unfreezeWorker();
             }

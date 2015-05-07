@@ -63,7 +63,7 @@ namespace PADIMapNoReduce {
         Dictionary<string, int> nFileLines = new Dictionary<string, int>();
 
         public string getSplitContent(int splitNumber, string inputPath, int nSplits) {
-            Console.WriteLine("CHEGUEI E QUERO O SPLIT " + splitNumber);
+            Console.WriteLine("GETTING SPLIT " + splitNumber);
             
             int nLines;
             int linesToRead;
@@ -100,7 +100,7 @@ namespace PADIMapNoReduce {
                 {
                     string[] mySplitContent = new string[linesToRead];
                     Array.Copy(linesContent, start, mySplitContent, 0, linesToRead);
-                    Console.WriteLine("MY SPLIT = " + string.Join(" ", mySplitContent));
+                    Console.WriteLine("MY CONTENT = " + string.Join(" ", mySplitContent));
                     return string.Join(" ", mySplitContent);
                 }
                 else
