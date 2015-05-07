@@ -307,22 +307,29 @@ namespace PADIMapNoReduce
 
         public void unfreezeWorker()
         {
-            try
+            if (isFrozen)
             {
-                Console.WriteLine("UNFREEZE!");
-                isFrozen = false;
-                IWorker jobTracker = (IWorker)Activator.GetObject(typeof(IWorker), jobTrackerURL);
-                jobTracker.notifyIsAvailable(myURL);
-                myThread.Resume();
+                try
+                {
+                    Console.WriteLine("UNFREEZE!");
+                    isFrozen = false;
+                    IWorker jobTracker = (IWorker)Activator.GetObject(typeof(IWorker), jobTrackerURL);
+                    jobTracker.notifyIsAvailable(myURL);
+                    myThread.Resume();
+                }
+                catch (NullReferenceException)
+                {
+                    // If it reaches this point, it means there was no job being done and we don't resume it.
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.Message);
+                    Console.WriteLine(e.StackTrace);
+                }
             }
-            catch (NullReferenceException)
+            else
             {
-                // If it reaches this point, it means there was no job being done and we don't resume it.
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.Message);
-                Console.WriteLine(e.StackTrace);
+                Console.WriteLine("This worker wasn't frozen!");
             }
         }
 
