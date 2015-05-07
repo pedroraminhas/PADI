@@ -1,10 +1,15 @@
 WORKER 1 tcp://localhost:20001/PM tcp://localhost:30001/W
-%WAIT 3
+WAIT 5
 WORKER 2 tcp://localhost:20001/PM tcp://localhost:30002/W tcp://localhost:30001/W
 UNFREEZEW 2
 WORKER 3 tcp://localhost:20001/PM tcp://localhost:30003/W tcp://localhost:30001/W
 %WAIT 3
 WORKER 4 tcp://localhost:20001/PM tcp://localhost:30004/W tcp://localhost:30001/W
+STATUS
+WAIT 3
+STATUS
+FREEZEW 2
+WAIT 2
 STATUS
 %WORKER 5 tcp://localhost:20001/PM tcp://localhost:30005/W tcp://localhost:30001/W
 %WORKER 6 tcp://localhost:20001/PM tcp://localhost:30006/W tcp://localhost:30001/W
