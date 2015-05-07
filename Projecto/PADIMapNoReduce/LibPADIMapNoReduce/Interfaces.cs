@@ -10,12 +10,14 @@ namespace PADIMapNoReduce {
     }
 
     public interface IWorker : IMapperTransfer {
-        void notify(string workerURL, bool isJobTracker);
+        void notify(string workerURL, string jobTrackerURL);
+        void setURLs(string workerURL, string jobTrackerURL);
         void doMapTask(List<int> splits, string workerURL, string inputPath, string outputPath, byte[] code, string className, int nSplits, int clientPort);
         void getStatus();
         void slowWorker(int seconds);
         void freezeWorker();
         void unfreezeWorker();
+        void notifyIsAvailable(string workerURL);
         void freezeJobTracker();
         void unfreezeJobTracker();
     }

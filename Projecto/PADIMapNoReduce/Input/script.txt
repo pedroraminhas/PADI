@@ -7,3 +7,4 @@ WORKER 3 tcp://localhost:20001/PM tcp://localhost:30003/W tcp://localhost:30001/
 FREEZEW 2
 SUBMIT tcp://localhost:30001/W ..\..\..\Input\test.txt ..\..\..\result\ 6 Mapper ..\..\..\LibMapper\bin\Debug\LibMapper.dll
 UNFREEZEW 2
+SUBMIT tcp://localhost:30001/W ..\..\..\Input\test.txt ..\..\..\result\ 6 Mapper ..\..\..\LibMapper\bin\Debug\LibMapper.dll

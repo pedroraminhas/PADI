@@ -15,10 +15,12 @@ namespace PADIMapNoReduce
     static class PuppetMaster
     {
         static int puppetMasterPort;
-        static string puppetMasterURL;
+        static string myURL;
         //static string[] puppetMastersURLs;
-        static Dictionary<string, string> workers = new Dictionary<string, string>();
         static string[] splittedInstruction;
+        static string jobTrackerURL;
+        static Dictionary<string, string> workers = new Dictionary<string, string>();
+        
 
         [STAThread]
         static void Main(string[] args)
@@ -26,7 +28,7 @@ namespace PADIMapNoReduce
             if (args.Length == 0)
             {
                 puppetMasterPort= 20001;
-                puppetMasterURL = "tcp://localhost:" + puppetMasterPort + "/PM";
+                myURL = "tcp://localhost:" + puppetMasterPort + "/PM";
                 registerChannel(puppetMasterPort);
                 //puppetMastersURLs = startPuppetMasters();
                 startGUI();
@@ -34,7 +36,7 @@ namespace PADIMapNoReduce
             else
             {
                 puppetMasterPort= Int32.Parse(args[0]);
-                puppetMasterURL = "tcp://localhost:" + puppetMasterPort + "/PM";
+                myURL = "tcp://localhost:" + puppetMasterPort + "/PM";
                 registerChannel(puppetMasterPort);
                 Console.WriteLine("PORT = " + Int32.Parse(args[0]));
                 Console.ReadLine();
@@ -114,18 +116,18 @@ namespace PADIMapNoReduce
         {
             string targetPuppetMasterURL = splittedInstruction[2];
             string serviceURL = splittedInstruction[3];
-            if (targetPuppetMasterURL.Equals(puppetMasterURL))
+            if (targetPuppetMasterURL.Equals(myURL))
             {
                 if (splittedInstruction.Length == 4)
-
                 {
+                    jobTrackerURL = serviceURL;
                     Process.Start(@"..\..\..\Worker\bin\Debug\Server.exe", serviceURL);
                     Console.WriteLine("STARTED THE JOB TRACKER AT " + serviceURL);
                 }
                 else
                 {
                     string entryURL = splittedInstruction[4];
-                    Process.Start(@"..\..\..\Worker\bin\Debug\Server.exe", serviceURL + " " + entryURL);
+                    Process.Start(@"..\..\..\Worker\bin\Debug\Server.exe", serviceURL + " " + entryURL + " " + jobTrackerURL);
                     Console.WriteLine("STARTED A WORKER AT " + serviceURL);
                 }
                 workers.Add(splittedInstruction[1], serviceURL);

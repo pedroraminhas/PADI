@@ -23,19 +23,22 @@ namespace PADIMapNoReduce
             RemotingConfiguration.RegisterWellKnownServiceType(typeof(WorkerServices), "W", WellKnownObjectMode.Singleton);
 
             // if it's a worker, inform the job tracker about joining the system.
-            if (args.Length == 2)
+            if (args.Length == 3)
             {
                 string entryURL = args[1];
                 IWorker jobTracker = (IWorker)Activator.GetObject(typeof(IWorker), entryURL);
                 string workerURL = args[0];
-                jobTracker.notify(workerURL, false);
+                string jobTrackerURL = args[2];
+                jobTracker.notify(workerURL, jobTrackerURL);
+                IWorker worker = (IWorker)Activator.GetObject(typeof(IWorker), workerURL);
+                worker.setURLs(workerURL, jobTrackerURL);
             }
             //if it's a job tracker, adds itself to the list of workers
             else
             {
                 string entryURL = args[0];
                 IWorker jobTracker = (IWorker)Activator.GetObject(typeof(IWorker), entryURL);
-                jobTracker.notify(entryURL, true);
+                jobTracker.notify(entryURL, entryURL);
             }
             System.Console.WriteLine("Press <enter> to terminate server...");
             System.Console.ReadLine();
@@ -44,9 +47,10 @@ namespace PADIMapNoReduce
 
     internal class WorkerServices : MarshalByRefObject, IWorker {
         private string myURL;
+        private string jobTrackerURL;
         private string WORKER_IDLE = "IDLE";
         private string WORKER_UNAVAILABLE = "UNAVAILABLE";
-
+        private bool isFrozen = false;
         Thread myThread;
         List<string> workersURLs = new List<string>();
         Dictionary<string, string> workersStatus = new Dictionary<string, string>();
@@ -56,14 +60,18 @@ namespace PADIMapNoReduce
         string className;
         byte[] code;
         
-        public void notify(string workerURL, bool isJobTracker)
+        public void notify(string workerURL, string jobTrackerURL)
         {
             workersURLs.Add(workerURL);
             workersStatus.Add(workerURL, WORKER_IDLE);
-            if (isJobTracker)
-            {
-                myURL = workerURL;
-            }
+            this.myURL = workerURL;
+            this.jobTrackerURL = jobTrackerURL;
+        }
+
+        public void setURLs(string myURL, string jobTrackerURL)
+        {
+            this.myURL = myURL;
+            this.jobTrackerURL = jobTrackerURL;
         }
 
         public bool submit(string myInputPath, int numSplits, string myOutputPath, string myClassName, byte[] myCode, int clientPort) {
@@ -88,7 +96,6 @@ namespace PADIMapNoReduce
                 string workerURL = availableWorkers[i%nAvailableWorkers];
                 if (!splitsPerWorker.ContainsKey(workerURL))
                     splitsPerWorker.Add(workerURL, new List<int>());
-
                 splitsPerWorker[workerURL].Add(i);
                 Console.WriteLine("SPLIT " + i + " ASSIGNED TO " + workerURL);
             }
@@ -104,7 +111,6 @@ namespace PADIMapNoReduce
             catch (SocketException) {
                 System.Console.WriteLine("Could not locate the client");
             }
-
             return content;
         }
 
@@ -162,7 +168,7 @@ namespace PADIMapNoReduce
                 IWorker worker = (IWorker)Activator.GetObject(typeof(IWorker), workerURL);
                 worker.doMapTask(splits, workerURL, inputPath, outputPath, code, className, nSplits, clientPort);
             }
-            catch (SocketException)
+            catch (InvalidOperationException)
             {
                 Console.WriteLine("WORKER " + workerURL + " IS NOT AVAILABLE: REDISTRIBUTING SPLITS...");
                 workersStatus[workerURL] = WORKER_UNAVAILABLE;
@@ -185,7 +191,6 @@ namespace PADIMapNoReduce
                             object ClassObj = Activator.CreateInstance(type);
                             object[] args = new object[] { mySplitContent };
                             object resultObject = type.InvokeMember("Map", BindingFlags.Default | BindingFlags.InvokeMethod, null, ClassObj, args);
-
                             return (IList<KeyValuePair<string, string>>)resultObject;
                         }
                     }
@@ -200,21 +205,29 @@ namespace PADIMapNoReduce
 
         public void doMapTask(List<int> splits, string workerURL,string inputPath,string outputPath, byte[] code, string className, int nSplits, int clientPort)
         {
-            myThread = Thread.CurrentThread;
-            for (int i = 0; i < splits.Count; i++)
+            Console.WriteLine("O JOB TRACKER ESTA NO " + jobTrackerURL);
+            if (!isFrozen)
             {
-                string mySplitContent = getSplitContent(splits[i], inputPath, nSplits, clientPort);
-                IList<KeyValuePair<string, string>> result = processSplit(mySplitContent, code, className);
-                try
+                myThread = Thread.CurrentThread;
+                for (int i = 0; i < splits.Count; i++)
                 {
-                    IClient client = (IClient)Activator.GetObject(typeof(IClient), "tcp://localhost:" + clientPort + "/C");
-                    client.sendResult(result, outputPath, splits[i] + ".out");
-                    Console.WriteLine("WORKER " + workerURL + " FINISHED " + splits[i]);
+                    string mySplitContent = getSplitContent(splits[i], inputPath, nSplits, clientPort);
+                    IList<KeyValuePair<string, string>> result = processSplit(mySplitContent, code, className);
+                    try
+                    {
+                        IClient client = (IClient)Activator.GetObject(typeof(IClient), "tcp://localhost:" + clientPort + "/C");
+                        client.sendResult(result, outputPath, splits[i] + ".out");
+                        Console.WriteLine("WORKER " + workerURL + " FINISHED " + splits[i]);
+                    }
+                    catch (SocketException)
+                    {
+                        System.Console.WriteLine("Could not locate the client...");
+                    }
                 }
-                catch (SocketException)
-                {
-                    System.Console.WriteLine("Could not locate the client...");
-                }
+            }
+            else
+            {
+                throw new InvalidOperationException();
             }
         }
 
@@ -245,11 +258,11 @@ namespace PADIMapNoReduce
 
         public void freezeWorker()
         {
+            Console.WriteLine("O JOB TRACKER ESTA NO " + jobTrackerURL);
             Console.WriteLine("FREEZE!");
-
-
-            TcpChannel channel = (TcpChannel)ChannelServices.GetChannel("tcp");
-            channel.StopListening(null);
+            isFrozen = true;
+            //TcpChannel channel = (TcpChannel)ChannelServices.GetChannel("tcp");
+            //channel.StopListening(null);
             try
             {
                 myThread.Suspend();
@@ -267,19 +280,34 @@ namespace PADIMapNoReduce
 
         public void unfreezeWorker()
         {
-            Console.WriteLine("UNFREEZE!");
-            TcpChannel channel = (TcpChannel)ChannelServices.GetChannel("tcp");
-            channel.StartListening(null);
             try
             {
+                Console.WriteLine("O JOB TRACKER ESTA NO " + jobTrackerURL);
+                Console.WriteLine("UNFREEZE!");
+                isFrozen = false;
+                IWorker jobTracker = (IWorker)Activator.GetObject(typeof(IWorker), jobTrackerURL);
+                Console.WriteLine("MY URL " + myURL);
+                jobTracker.notifyIsAvailable(myURL);
+                //TcpChannel channel = (TcpChannel)ChannelServices.GetChannel("tcp");
+                //channel.StartListening(null);
                 myThread.Resume();
             }
             catch (NullReferenceException)
             {
                 // If it reaches this point, it means there was no job being done and we don't resume it.
             }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                Console.WriteLine(e.StackTrace);
+            }
         }
 
+        public void notifyIsAvailable(string workerURL)
+        {
+            Console.WriteLine("WORKER A ACTUALIZAR = " + workerURL);
+            workersStatus[workerURL] = WORKER_IDLE;
+        }
 
         public void freezeJobTracker() { }
         public void unfreezeJobTracker() { }
