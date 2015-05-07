@@ -28,4 +28,3 @@ C:\Users\Pedro Raminhas\Desktop\pergaminho dos deuses\PADIMapNoReduce\LibPADIMap
 C:\Users\Pedro Raminhas\Desktop\pergaminho dos deuses\PADIMapNoReduce\LibPADIMapNoReduce\bin\Debug\LibPADIMapNoReduce.pdb
 C:\Users\Pedro Raminhas\Desktop\pergaminho dos deuses\PADIMapNoReduce\LibPADIMapNoReduce\obj\Debug\LibPADIMapNoReduce.dll
 C:\Users\Pedro Raminhas\Desktop\pergaminho dos deuses\PADIMapNoReduce\LibPADIMapNoReduce\obj\Debug\LibPADIMapNoReduce.pdb
-C:\Users\Ana\Desktop\PADIMapNoReduce\LibPADIMapNoReduce\obj\Debug\LibPADIMapNoReduce.csprojResolveAssemblyReference.cache

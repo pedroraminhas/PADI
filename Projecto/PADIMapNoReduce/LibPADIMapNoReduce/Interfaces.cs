@@ -16,6 +16,7 @@ namespace PADIMapNoReduce {
         void getStatus();
         void slowWorker(int seconds);
         void freezeWorker();
+        void notifyIsUnavailable(string workerURL);
         void unfreezeWorker();
         void notifyIsAvailable(string workerURL);
         void freezeJobTracker();

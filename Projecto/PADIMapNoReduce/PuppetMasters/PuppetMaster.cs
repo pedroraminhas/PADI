@@ -17,7 +17,6 @@ namespace PADIMapNoReduce
         static int puppetMasterPort;
         static string myURL;
         //static string[] puppetMastersURLs;
-        static string[] splittedInstruction;
         static string jobTrackerURL;
         static Dictionary<string, string> workers = new Dictionary<string, string>();
         
@@ -69,7 +68,7 @@ namespace PADIMapNoReduce
 
         public static void splitInstruction(string instruction)
         {
-            splittedInstruction = instruction.Split(' ');
+            string[] splittedInstruction = instruction.Split(' ');
             string command = splittedInstruction[0];
             switch (command)
             {
@@ -77,31 +76,31 @@ namespace PADIMapNoReduce
                     startWorker(splittedInstruction);
                     break;
                 case "SUBMIT":
-                    submit();
+                    submit(splittedInstruction);
                     break;
                 case "WAIT":
-                    wait();
+                    wait(splittedInstruction);
                     break;
                 case "STATUS":
                     getStatus();
                     break;
                 case "SLOWW":
-                    new Thread(() => slowWorker()).Start();
+                    new Thread(() => slowWorker(splittedInstruction)).Start();
                     Thread.Sleep(1);
                     break;
                 case "FREEZEW":
-                    new Thread(() => freezeWorker()).Start();
+                    new Thread(() => freezeWorker(splittedInstruction)).Start();
                     Thread.Sleep(1);
                     break;
                 case "UNFREEZEW":
-                    new Thread(() => unfreezeWorker()).Start();
+                    new Thread(() => unfreezeWorker(splittedInstruction)).Start();
                     Thread.Sleep(1);
                     break;
                 case "FREEZEC":
-                    freezeJobTracker();
+                    freezeJobTracker(splittedInstruction);
                     break;
                 case "UNFREEZEC":
-                    unfreezeJobTracker();
+                    unfreezeJobTracker(splittedInstruction);
                     break;
                 default:
                     Console.WriteLine("BAD COMMAND - PLEASE CHECK YOUR SPELLING.");
@@ -121,48 +120,47 @@ namespace PADIMapNoReduce
                 if (splittedInstruction.Length == 4)
                 {
                     jobTrackerURL = serviceURL;
+                    Console.WriteLine("Starting the job tracker at " + serviceURL + "...");
                     Process.Start(@"..\..\..\Worker\bin\Debug\Server.exe", serviceURL);
-                    Console.WriteLine("STARTED THE JOB TRACKER AT " + serviceURL);
                 }
                 else
                 {
                     string entryURL = splittedInstruction[4];
+                    Console.WriteLine("Starting a worker at " + serviceURL + "...");
                     Process.Start(@"..\..\..\Worker\bin\Debug\Server.exe", serviceURL + " " + entryURL + " " + jobTrackerURL);
-                    Console.WriteLine("STARTED A WORKER AT " + serviceURL);
                 }
                 workers.Add(splittedInstruction[1], serviceURL);
             }
             else
             {
-                Console.WriteLine("ASKING THE PUPPET MASTER AT " + targetPuppetMasterURL + " TO CREATE A WORKER AT " + serviceURL);
+                Console.WriteLine("Asking the puppet master at " + targetPuppetMasterURL + " to create a worker at " + serviceURL + "...");
                 IPuppetMasters puppetMaster = (IPuppetMasters)Activator.GetObject(typeof(IWorker), targetPuppetMasterURL);
                 puppetMaster.startWorker(splittedInstruction);
             }
         }
 
-        public static void submit()
+        public static void submit(string[] splittedInstruction)
         {
             Random r = new Random();
-            int clientPort = r.Next(10001, 20000);
+            int clientPort = r.Next(10001, 19999);
+            Console.WriteLine("Sending a job from the client port " + clientPort + "...");
             Process.Start(@"..\..\..\Client\bin\Debug\Client.exe", String.Join(" ", splittedInstruction) + " " + clientPort);
-            Console.WriteLine("SENDING A JOB FROM " + clientPort);
         }
 
-        public static void wait()
+        public static void wait(string[] splittedInstruction)
         {
+            Console.WriteLine("Waiting " + splittedInstruction[1] + " seconds...");
             Thread.Sleep(int.Parse(splittedInstruction[1]) * 1000);
         }
 
         private static void getStatus()
         {
-            foreach (KeyValuePair<string, string> entry in workers)
-            {
-                IWorker target = (IWorker)Activator.GetObject(typeof(IWorker), entry.Value);
-                target.getStatus();
-            }
+            Console.WriteLine("Printing system's status...");
+            IWorker jobTracker = (IWorker)Activator.GetObject(typeof(IWorker), jobTrackerURL);
+            jobTracker.getStatus();
         }
 
-        private static void slowWorker()
+        private static void slowWorker(string[] splittedInstruction)
         {
             try
             {
@@ -175,11 +173,11 @@ namespace PADIMapNoReduce
             }
         }
 
-        private static void freezeWorker()
+        private static void freezeWorker(string[] splittedInstruction)
         {
             try
             {
-                Console.WriteLine("FREEZING WORKER " + splittedInstruction[1]);
+                Console.WriteLine("Freezing worker " + splittedInstruction[1] + "...");
                 IWorker target = (IWorker)Activator.GetObject(typeof(IWorker), workers[splittedInstruction[1]]);
                 target.freezeWorker();
             }
@@ -187,13 +185,17 @@ namespace PADIMapNoReduce
             {
                 Console.WriteLine(e.Message);
             }
+            catch (KeyNotFoundException)
+            {
+                Console.WriteLine("There is no worker with ID = " + splittedInstruction[1] + "!");
+            }
         }
 
-        private static void unfreezeWorker()
+        private static void unfreezeWorker(string[] splittedInstruction)
         {
             try
             {
-                Console.WriteLine("UNFREEZING WORKER " + splittedInstruction[1]);
+                Console.WriteLine("Unfreezing worker " + splittedInstruction[1] + "...");
                 IWorker target = (IWorker)Activator.GetObject(typeof(IWorker), workers[splittedInstruction[1]]);
                 target.unfreezeWorker();
             }
@@ -203,13 +205,13 @@ namespace PADIMapNoReduce
             }
         }
 
-        private static void freezeJobTracker()
+        private static void freezeJobTracker(string[] splittedInstruction)
         {
             IWorker target = (IWorker)Activator.GetObject(typeof(IWorker), workers[splittedInstruction[1]]);
             target.freezeJobTracker();
         }
 
-        private static void unfreezeJobTracker()
+        private static void unfreezeJobTracker(string[] splittedInstruction)
         {
             IWorker target = (IWorker)Activator.GetObject(typeof(IWorker), workers[splittedInstruction[1]]);
             target.unfreezeJobTracker();

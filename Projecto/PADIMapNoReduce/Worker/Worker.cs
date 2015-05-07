@@ -17,11 +17,10 @@ namespace PADIMapNoReduce
         {
             string serviceURL = args[0];
             string port = (serviceURL.Split(':')[2].Split('/'))[0];
-            Console.WriteLine("PORT = " + port);
             TcpChannel channel = new TcpChannel(int.Parse(port));
             ChannelServices.RegisterChannel(channel, true);
             RemotingConfiguration.RegisterWellKnownServiceType(typeof(WorkerServices), "W", WellKnownObjectMode.Singleton);
-
+            Console.WriteLine("Running @ " + port);
             // if it's a worker, inform the job tracker about joining the system.
             if (args.Length == 3)
             {
@@ -40,7 +39,6 @@ namespace PADIMapNoReduce
                 IWorker jobTracker = (IWorker)Activator.GetObject(typeof(IWorker), entryURL);
                 jobTracker.notify(entryURL, entryURL);
             }
-            System.Console.WriteLine("Press <enter> to terminate server...");
             System.Console.ReadLine();
         }
     }
@@ -230,7 +228,33 @@ namespace PADIMapNoReduce
             }
         }
 
-        public void getStatus() { }
+        public void getStatus() {
+            Console.WriteLine("\nSYSTEM STATE\n");
+            if (jobTrackerURL != null)
+            {
+                Console.WriteLine("JOB TRACKER: " + jobTrackerURL);
+            }
+            else
+            {
+                Console.WriteLine("JOB TRACKER NOT SET");
+            }
+            Console.WriteLine("NUMBER OF REGISTERED WORKERS: " + workersStatus.Count);
+
+            List<string> failedWorkers = new List<string>();
+            foreach (KeyValuePair<string, string> entry in workersStatus)
+            {
+                Console.WriteLine("\t" + entry.Key);
+                if (entry.Value.Equals(this.WORKER_UNAVAILABLE))
+                {
+                    failedWorkers.Add(entry.Key);
+                }
+            }
+            Console.WriteLine("NUMBER OF FAILED WORKERS: " + failedWorkers.Count);
+            foreach (string worker in failedWorkers)
+            {
+                Console.WriteLine("\t" + worker);
+            }
+        }
 
         public void slowWorker(int seconds) {
             TimeSpan t = DateTime.Now.TimeOfDay.Add(new TimeSpan(0, 0, Convert.ToInt32(seconds)));
@@ -261,14 +285,21 @@ namespace PADIMapNoReduce
             {
                 Console.WriteLine("FREEZE!");
                 isFrozen = true;
+                IWorker jobTracker = (IWorker)Activator.GetObject(typeof(IWorker), jobTrackerURL);
+                jobTracker.notifyIsUnavailable(myURL);
                 myThread.Suspend();
             }
             catch (NullReferenceException)
             {
                 // If it reaches this point, it means there is no job being done and we don't suspend it.
             }
+            catch (ArgumentNullException)
+            {
+                Console.WriteLine("Job tracker URL isn't known yet...");
+            }
             catch (Exception e)
             {
+                Console.WriteLine(e.GetType());
                 Console.WriteLine(e.Message);
                 Console.WriteLine(e.StackTrace);
             }
@@ -293,6 +324,11 @@ namespace PADIMapNoReduce
                 Console.WriteLine(e.Message);
                 Console.WriteLine(e.StackTrace);
             }
+        }
+
+        public void notifyIsUnavailable(string workerURL)
+        {
+            workersStatus[workerURL] = WORKER_UNAVAILABLE;
         }
 
         public void notifyIsAvailable(string workerURL)
