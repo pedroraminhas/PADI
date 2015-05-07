@@ -73,16 +73,16 @@ namespace PADIMapNoReduce
             switch (command)
             {
                 case "WORKER":
-                    new Thread(() => startWorker(splittedInstruction)).Start();
+                    startWorker(splittedInstruction);
                     break;
                 case "SUBMIT":
-                    new Thread(() => submit(splittedInstruction)).Start();
+                    submit(splittedInstruction);
                     break;
                 case "WAIT":
                     wait(splittedInstruction);
                     break;
                 case "STATUS":
-                    new Thread(() => getStatus()).Start();
+                    getStatus();
                     break;
                 case "SLOWW":
                     new Thread(() => slowWorker(splittedInstruction)).Start();
@@ -97,10 +97,10 @@ namespace PADIMapNoReduce
                     Thread.Sleep(1);
                     break;
                 case "FREEZEC":
-                    new Thread(() => freezeJobTracker(splittedInstruction)).Start();
+                    freezeJobTracker(splittedInstruction);
                     break;
                 case "UNFREEZEC":
-                    new Thread(() => unfreezeJobTracker(splittedInstruction)).Start();
+                    unfreezeJobTracker(splittedInstruction);
                     break;
                 default:
                     Console.WriteLine("BAD COMMAND - PLEASE CHECK YOUR SPELLING.");
@@ -202,10 +202,6 @@ namespace PADIMapNoReduce
             catch (SocketException e)
             {
                 Console.WriteLine(e.Message);
-            }
-            catch (KeyNotFoundException)
-            {
-                Console.WriteLine("There is no worker with ID = " + splittedInstruction[1] + "!");
             }
         }
 
