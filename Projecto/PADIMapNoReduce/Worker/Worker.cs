@@ -205,7 +205,6 @@ namespace PADIMapNoReduce
 
         public void doMapTask(List<int> splits, string workerURL,string inputPath,string outputPath, byte[] code, string className, int nSplits, int clientPort)
         {
-            Console.WriteLine("O JOB TRACKER ESTA NO " + jobTrackerURL);
             if (!isFrozen)
             {
                 myThread = Thread.CurrentThread;
@@ -258,13 +257,10 @@ namespace PADIMapNoReduce
 
         public void freezeWorker()
         {
-            Console.WriteLine("O JOB TRACKER ESTA NO " + jobTrackerURL);
-            Console.WriteLine("FREEZE!");
-            isFrozen = true;
-            //TcpChannel channel = (TcpChannel)ChannelServices.GetChannel("tcp");
-            //channel.StopListening(null);
             try
             {
+                Console.WriteLine("FREEZE!");
+                isFrozen = true;
                 myThread.Suspend();
             }
             catch (NullReferenceException)
@@ -282,14 +278,10 @@ namespace PADIMapNoReduce
         {
             try
             {
-                Console.WriteLine("O JOB TRACKER ESTA NO " + jobTrackerURL);
                 Console.WriteLine("UNFREEZE!");
                 isFrozen = false;
                 IWorker jobTracker = (IWorker)Activator.GetObject(typeof(IWorker), jobTrackerURL);
-                Console.WriteLine("MY URL " + myURL);
                 jobTracker.notifyIsAvailable(myURL);
-                //TcpChannel channel = (TcpChannel)ChannelServices.GetChannel("tcp");
-                //channel.StartListening(null);
                 myThread.Resume();
             }
             catch (NullReferenceException)
@@ -305,7 +297,6 @@ namespace PADIMapNoReduce
 
         public void notifyIsAvailable(string workerURL)
         {
-            Console.WriteLine("WORKER A ACTUALIZAR = " + workerURL);
             workersStatus[workerURL] = WORKER_IDLE;
         }
 
