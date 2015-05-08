@@ -6,19 +6,19 @@ namespace PADIMapNoReduce {
     }
 
     public interface IMapperTransfer {
-        bool submit(string inputPath, int nSplits, string outputPath, string className, byte[] code, int port);
+        void submit(string inputPath, string outputPath, int nSplits, string className, byte[] code, int port);
     }
 
     public interface IWorker : IMapperTransfer {
-        void notify(string workerURL, string jobTrackerURL);
+        void notify(string workerURL);
         void setURLs(string workerURL, string jobTrackerURL);
         void doMapTask(List<int> splits, string workerURL, string inputPath, string outputPath, byte[] code, string className, int nSplits, int clientPort);
-        void getStatus();
+        void printSystemStatus(bool toJobTrackers);
+        void printJobsStatus();
         void slowWorker(int seconds);
         void freezeWorker();
-        void notifyIsUnavailable(string workerURL);
         void unfreezeWorker();
-        void notifyIsAvailable(string workerURL);
+        void notifyAvailability(string workerURL, string state);
         void freezeJobTracker();
         void unfreezeJobTracker();
     }

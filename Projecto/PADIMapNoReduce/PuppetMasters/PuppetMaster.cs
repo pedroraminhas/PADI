@@ -74,15 +74,18 @@ namespace PADIMapNoReduce
             {
                 case "WORKER":
                     new Thread(() => startWorker(splittedInstruction)).Start();
+                    Thread.Sleep(1);
                     break;
                 case "SUBMIT":
                     new Thread(() => submit(splittedInstruction)).Start();
+                    Thread.Sleep(1);
                     break;
                 case "WAIT":
                     wait(splittedInstruction);
                     break;
                 case "STATUS":
                     new Thread(() => getStatus()).Start();
+                    Thread.Sleep(1);
                     break;
                 case "SLOWW":
                     new Thread(() => slowWorker(splittedInstruction)).Start();
@@ -98,9 +101,11 @@ namespace PADIMapNoReduce
                     break;
                 case "FREEZEC":
                     new Thread(() => freezeJobTracker(splittedInstruction)).Start();
+                    Thread.Sleep(1);
                     break;
                 case "UNFREEZEC":
                     new Thread(() => unfreezeJobTracker(splittedInstruction)).Start();
+                    Thread.Sleep(1);
                     break;
                 default:
                     Console.WriteLine("BAD COMMAND - PLEASE CHECK YOUR SPELLING.");
@@ -127,7 +132,7 @@ namespace PADIMapNoReduce
                 {
                     string entryURL = splittedInstruction[4];
                     Console.WriteLine("Starting a worker at " + serviceURL + "...");
-                    Process.Start(@"..\..\..\Worker\bin\Debug\Server.exe", serviceURL + " " + entryURL + " " + jobTrackerURL);
+                    Process.Start(@"..\..\..\Worker\bin\Debug\Server.exe", serviceURL + " " + entryURL);
                 }
                 workers.Add(splittedInstruction[1], serviceURL);
             }
@@ -143,7 +148,7 @@ namespace PADIMapNoReduce
         {
             Random r = new Random();
             int clientPort = r.Next(10001, 19999);
-            Console.WriteLine("Sending a job from the client port " + clientPort + "...");
+            Console.WriteLine("Sending a job from client port = " + clientPort + "...");
             Process.Start(@"..\..\..\Client\bin\Debug\Client.exe", String.Join(" ", splittedInstruction) + " " + clientPort);
         }
 
@@ -157,7 +162,7 @@ namespace PADIMapNoReduce
         {
             Console.WriteLine("Printing system's status...");
             IWorker jobTracker = (IWorker)Activator.GetObject(typeof(IWorker), jobTrackerURL);
-            jobTracker.getStatus();
+            jobTracker.printSystemStatus(true);
         }
 
         private static void slowWorker(string[] splittedInstruction)

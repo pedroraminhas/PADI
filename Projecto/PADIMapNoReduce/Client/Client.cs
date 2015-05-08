@@ -8,32 +8,26 @@ using System.IO;
 
 
 namespace PADIMapNoReduce {
-    public class Client {
-        private static string jobTrackerURL;
-        private static string inputPath;
-        private static string outputPath;
-        private static int nSplits;
-        private static string mapperName;
-        private static string dllPath;
-        private static int port;
 
-        static void Main(string[] args) {
-            jobTrackerURL = args[1];
-            inputPath = args[2];
-            outputPath = args[3];
-            nSplits = int.Parse(args[4]);
-            mapperName = args[5];
-            dllPath = args[6];
-            port = int.Parse(args[7]);
-
+    public class Client
+    {
+        static void Main(string[] args)
+        {
+            int port = int.Parse(args[7]);
             TcpChannel channel = new TcpChannel(port);
             ChannelServices.RegisterChannel(channel, true);
             RemotingConfiguration.RegisterWellKnownServiceType(typeof(ClientServices), "C", WellKnownObjectMode.Singleton);
-
-            submit();
+            
+            string jobTrackerURL = args[1];
+            string inputPath = args[2];
+            string outputPath = args[3];
+            int nSplits = int.Parse(args[4]);
+            string mapperName = args[5];
+            string dllPath = args[6];
+            submit(jobTrackerURL, inputPath, outputPath, nSplits, mapperName, dllPath, port);
         }
 
-        private static void submit()
+        private static void submit(string jobTrackerURL, string inputPath, string outputPath, int nSplits, string mapperName, string dllPath, int port)
         {
             IWorker jobTracker = (IWorker)Activator.GetObject(typeof(IWorker), jobTrackerURL);
             byte[] code = File.ReadAllBytes(dllPath);
@@ -41,15 +35,12 @@ namespace PADIMapNoReduce {
             {
                 string[] files = Directory.GetFiles(outputPath, "*.out");
                 foreach (string f in files)
-                {
                     File.Delete(f);
-                }
-                Console.WriteLine("SENDING THE JOB TO THE JOB TRACKER");
-                Console.WriteLine(jobTracker.submit(inputPath, nSplits, outputPath, mapperName, code, port));
+                jobTracker.submit(inputPath, outputPath, nSplits, mapperName, code, port);
             }
             catch (DirectoryNotFoundException)
             {
-                Console.WriteLine(jobTracker.submit(inputPath, nSplits, outputPath, mapperName, code, port));
+                jobTracker.submit(inputPath, outputPath, nSplits, mapperName, code, port);
             }
             catch (SocketException)
             {
@@ -62,51 +53,39 @@ namespace PADIMapNoReduce {
     internal class ClientServices : MarshalByRefObject, IClient {
         Dictionary<string, int> nFileLines = new Dictionary<string, int>();
 
-        public string getSplitContent(int splitNumber, string inputPath, int nSplits) {
-            Console.WriteLine("GETTING SPLIT " + splitNumber);
-            
+        public string getSplitContent(int splitNumber, string inputPath, int nSplits) {            
             int nLines;
-            int linesToRead;
-
             if (nFileLines.ContainsKey(inputPath))
-            {
                 nLines = nFileLines[inputPath];
-            }
             else
             {
                 nLines = File.ReadAllLines(@inputPath).Length;
-                nFileLines.Add(inputPath, nLines);
+                try
+                {
+                    nFileLines.Add(inputPath, nLines);
+                }
+                catch (ArgumentException)
+                { /* Sometimes, due to multithreaded processing, a thread tries to add
+                   * an entry do nFileLines but other thread in the meanwhile already
+                   * did it, so it says 'An item with the same key has already been added.'  */
+                }
             }
 
             int nLinesPerSplit = nLines / nSplits;
             int remainingLines = nLines % nSplits;
-
             int start = splitNumber * nLinesPerSplit;
-
             using (var sr = new StreamReader(inputPath))
             {
+                int linesToRead;
                 string[] linesContent = File.ReadAllLines(@inputPath);
-
                 if (splitNumber == (nSplits - 1))
-                {
                     linesToRead = nLinesPerSplit + remainingLines;
-                }
                 else
-                {
                     linesToRead = nLinesPerSplit;
-                }
-
-                if (linesToRead != 0)
-                {
-                    string[] mySplitContent = new string[linesToRead];
-                    Array.Copy(linesContent, start, mySplitContent, 0, linesToRead);
-                    Console.WriteLine("MY CONTENT = " + string.Join(" ", mySplitContent));
-                    return string.Join(" ", mySplitContent);
-                }
-                else
-                {
-                    return "";
-                }
+                string[] mySplitContent = new string[linesToRead];
+                Array.Copy(linesContent, start, mySplitContent, 0, linesToRead);
+                Console.WriteLine("Split " + splitNumber + " has content = " + string.Join(" ", mySplitContent));
+                return string.Join(" ", mySplitContent);
             }
         }
 
@@ -114,14 +93,9 @@ namespace PADIMapNoReduce {
             if (result != null)
             {
                 if (!Directory.Exists(outputPath))
-                {
                     Directory.CreateDirectory(outputPath);
-                }
-
                 foreach (KeyValuePair<string, string> p in result)
-                {
                     System.IO.File.AppendAllText(outputPath + splitIdentifier, p.Key + " " + p.Value + Environment.NewLine);
-                }
             }
         }
     }
