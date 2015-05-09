@@ -13,38 +13,47 @@ namespace PADIMapNoReduce {
     {
         static void Main(string[] args)
         {
-            int port = int.Parse(args[7]);
+            int port = int.Parse(args[6]);
             TcpChannel channel = new TcpChannel(port);
             ChannelServices.RegisterChannel(channel, true);
             RemotingConfiguration.RegisterWellKnownServiceType(typeof(ClientServices), "C", WellKnownObjectMode.Singleton);
             
-            string jobTrackerURL = args[1];
-            string inputPath = args[2];
-            string outputPath = args[3];
-            int nSplits = int.Parse(args[4]);
-            string mapperName = args[5];
-            string dllPath = args[6];
+            string jobTrackerURL = args[0];
+            string inputPath = args[1];
+            string outputPath = args[2];
+            int nSplits = int.Parse(args[3]);
+            string mapperName = args[4];
+            string dllPath = args[5];
             submit(jobTrackerURL, inputPath, outputPath, nSplits, mapperName, dllPath, port);
         }
 
         private static void submit(string jobTrackerURL, string inputPath, string outputPath, int nSplits, string mapperName, string dllPath, int port)
         {
-            IWorker jobTracker = (IWorker)Activator.GetObject(typeof(IWorker), jobTrackerURL);
             byte[] code = File.ReadAllBytes(dllPath);
             try
             {
                 string[] files = Directory.GetFiles(outputPath, "*.out");
                 foreach (string f in files)
                     File.Delete(f);
-                jobTracker.submit(inputPath, outputPath, nSplits, mapperName, code, port);
             }
             catch (DirectoryNotFoundException)
             {
+                Directory.CreateDirectory(outputPath);
+            }
+            try
+            {
+                IWorker jobTracker = (IWorker)Activator.GetObject(typeof(IWorker), jobTrackerURL);
                 jobTracker.submit(inputPath, outputPath, nSplits, mapperName, code, port);
             }
             catch (SocketException)
             {
                 Console.WriteLine("Could not locate server");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.GetType());
+                Console.WriteLine(e.Message);
+                Console.WriteLine(e.StackTrace);
             }
             Console.ReadLine();
         }

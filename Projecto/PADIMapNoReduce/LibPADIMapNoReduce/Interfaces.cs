@@ -20,6 +20,8 @@ namespace PADIMapNoReduce {
         void unfreezeWorker();
         void notifyAvailability(string workerURL, string state);
         void freezeJobTracker();
+        void notifyNewJobTracker(string jobTrackerURL);
+        Dictionary<string, string> getWorkersStatus();
         void unfreezeJobTracker();
     }
     

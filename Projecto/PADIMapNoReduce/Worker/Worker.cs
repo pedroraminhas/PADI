@@ -48,13 +48,14 @@ namespace PADIMapNoReduce
         Dictionary<string, string> workersStatus = new Dictionary<string, string>();
         private const string WORKER_IDLE = "IDLE";
         private const string WORKER_UNAVAILABLE = "UNAVAILABLE";
-        private Dictionary<string, Dictionary<int, string>> tasksStatus = new Dictionary<string, Dictionary<int, string>>();
+        private Dictionary<string, Dictionary<int, string>> tasksStatus;
         private const string PHASE_START = "READY TO START";
         private const string PHASE_SPLIT = "TRANSFERING SPLIT CONTENT";
         private const string PHASE_PROCESSING = "WAITING TO BE PROCESSED";
         private const string PHASE_SEND = "TRANSFERING MAP RESULTS";
         private const string PHASE_CONCLUDED = "CONCLUDED";
         private bool isFrozen = false;
+        private bool jobTrackerIsFrozen = false;
         Thread myThread;
         
         public void notify(string workerURL)
@@ -69,9 +70,14 @@ namespace PADIMapNoReduce
         }
 
         public void submit(string inputPath, string outputPath, int nSplits, string className, byte[] code, int clientPort) {
-            myThread = Thread.CurrentThread;
-            Dictionary<string, List<int>> splitsPerWorker = splitFile(nSplits);
-            assignMapTask(inputPath, outputPath, nSplits, className, code, splitsPerWorker, clientPort);
+            if (!jobTrackerIsFrozen)
+            {
+                myThread = Thread.CurrentThread;
+                Dictionary<string, List<int>> splitsPerWorker = splitFile(nSplits);
+                assignMapTask(inputPath, outputPath, nSplits, className, code, splitsPerWorker, clientPort);
+            }
+            else
+                throw new InvalidOperationException();
         }
 
         /* Each worker is given a list of splits, which are distributed in round robin style. */
@@ -93,19 +99,28 @@ namespace PADIMapNoReduce
 
         public void assignMapTask(string inputPath, string outputPath, int nSplits, string className, byte[] code, Dictionary<string, List<int>> splitsPerWorker, int clientPort)
         {
-            List<string> availableWorkers = getAvailableWorkers();
-            for (int i = 0; i < availableWorkers.Count; i++)
+            try
             {
-                if (availableWorkers[i].Equals(myURL))
+                List<string> availableWorkers = getAvailableWorkers();
+                for (int i = 0; i < availableWorkers.Count; i++)
                 {
-                    new Thread(() => doMapTask(splitsPerWorker[myURL], myURL, inputPath, outputPath, code, className, nSplits, clientPort)).Start();
-                    Thread.Sleep(1);
+                    if (availableWorkers[i].Equals(myURL))
+                    {
+                        new Thread(() => doMapTask(splitsPerWorker[myURL], myURL, inputPath, outputPath, code, className, nSplits, clientPort)).Start();
+                        Thread.Sleep(1);
+                    }
+                    else
+                    {
+                        new Thread(() => doTask(inputPath, outputPath, nSplits, className, code, availableWorkers[i], splitsPerWorker[availableWorkers[i]], clientPort)).Start();
+                        Thread.Sleep(1);
+                    }
                 }
-                else
-                {
-                    new Thread(() => doTask(inputPath, outputPath, nSplits, className, code, availableWorkers[i], splitsPerWorker[availableWorkers[i]], clientPort)).Start();
-                    Thread.Sleep(1);
-                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.GetType());
+                Console.WriteLine(e.Message);
+                Console.WriteLine(e.StackTrace);
             }
         }
 
@@ -158,11 +173,10 @@ namespace PADIMapNoReduce
         {
             try
             {
+                tasksStatus = new Dictionary<string, Dictionary<int, string>>();
                 tasksStatus.Add(inputPath, new Dictionary<int, string>());
                 foreach (int split in splits)
-                {
                     tasksStatus[inputPath].Add(split, PHASE_START);
-                }
 
                 if (!isFrozen)
                 {
@@ -186,13 +200,12 @@ namespace PADIMapNoReduce
                     }
                 }
                 else
-                {
                     throw new InvalidOperationException();
-                }
             }
             catch (Exception e) //PARA TIRAR QUANDO PARAR DE SE ESBARDALHAR
             {
                 Console.WriteLine(e.Message);
+                Console.WriteLine(e.StackTrace);
             }
         }
 
@@ -363,7 +376,32 @@ namespace PADIMapNoReduce
             workersStatus[workerURL] = state;
         }
         
-        public void freezeJobTracker() { }
-        public void unfreezeJobTracker() { }
+        public void freezeJobTracker()
+        {
+            Console.WriteLine("FREEZE!");
+            jobTrackerIsFrozen = true;
+        }
+
+        public void notifyNewJobTracker(string newJobTrackerURL)
+        {
+            if (newJobTrackerURL.Equals(myURL))
+            {
+                IWorker previousJobTracker = (IWorker)Activator.GetObject(typeof(IWorker), jobTrackerURL);
+                workersStatus = previousJobTracker.getWorkersStatus();
+            }
+            jobTrackerURL = newJobTrackerURL;
+            Console.WriteLine("WORKER " + myURL + " NOW KNOWS ABOUT " + jobTrackerURL);
+        }
+
+        public Dictionary<string, string> getWorkersStatus()
+        {
+            return workersStatus;
+        }
+
+        public void unfreezeJobTracker()
+        {
+            Console.WriteLine("UNFREEZE!");
+            jobTrackerIsFrozen = false;
+        }
     }
 }

@@ -18,8 +18,9 @@ namespace PADIMapNoReduce
         static string myURL;
         //static string[] puppetMastersURLs;
         static string jobTrackerURL;
+        static string previousJobTrackerURL;
         static Dictionary<string, string> workers = new Dictionary<string, string>();
-        
+        private static Dictionary<string, bool> workersStatus = new Dictionary<string, bool>();     // false if frozen
 
         [STAThread]
         static void Main(string[] args)
@@ -113,11 +114,11 @@ namespace PADIMapNoReduce
             }
         }
 
-        
         /* If the PuppetMaster URL in the instruction is this PuppetMasters's URL, creates the worker;
          * Else, does a remote call to the wanted PuppetMaster URL so it creates the worker. */
         public static void startWorker(string[] splittedInstruction)
         {
+            string workerID = splittedInstruction[1];
             string targetPuppetMasterURL = splittedInstruction[2];
             string serviceURL = splittedInstruction[3];
             if (targetPuppetMasterURL.Equals(myURL))
@@ -134,7 +135,8 @@ namespace PADIMapNoReduce
                     Console.WriteLine("Starting a worker at " + serviceURL + "...");
                     Process.Start(@"..\..\..\Worker\bin\Debug\Server.exe", serviceURL + " " + entryURL);
                 }
-                workers.Add(splittedInstruction[1], serviceURL);
+                workers.Add(workerID, serviceURL);
+                workersStatus.Add(serviceURL, true);
             }
             else
             {
@@ -149,7 +151,8 @@ namespace PADIMapNoReduce
             Random r = new Random();
             int clientPort = r.Next(10001, 19999);
             Console.WriteLine("Sending a job from client port = " + clientPort + "...");
-            Process.Start(@"..\..\..\Client\bin\Debug\Client.exe", String.Join(" ", splittedInstruction) + " " + clientPort);
+            string[] parameters = { jobTrackerURL, splittedInstruction[2], splittedInstruction[3], splittedInstruction[4], splittedInstruction[5], splittedInstruction[6], clientPort.ToString() };
+            Process.Start(@"..\..\..\Client\bin\Debug\Client.exe", String.Join(" ", parameters));
         }
 
         public static void wait(string[] splittedInstruction)
@@ -161,8 +164,15 @@ namespace PADIMapNoReduce
         private static void getStatus()
         {
             Console.WriteLine("Printing system's status...");
-            IWorker jobTracker = (IWorker)Activator.GetObject(typeof(IWorker), jobTrackerURL);
-            jobTracker.printSystemStatus(true);
+            try
+            {
+                IWorker jobTracker = (IWorker)Activator.GetObject(typeof(IWorker), jobTrackerURL);
+                jobTracker.printSystemStatus(true);
+            }
+            catch (ArgumentNullException)
+            {
+                Console.WriteLine("Impossible to print the status: the system isn't up yet.");
+            }
         }
 
         private static void slowWorker(string[] splittedInstruction)
@@ -216,14 +226,75 @@ namespace PADIMapNoReduce
 
         private static void freezeJobTracker(string[] splittedInstruction)
         {
-            IWorker target = (IWorker)Activator.GetObject(typeof(IWorker), workers[splittedInstruction[1]]);
-            target.freezeJobTracker();
+            try
+            {
+                string freezingURL = workers[splittedInstruction[1]];
+                Console.WriteLine("Freezing job tracker " + freezingURL + "...");
+                if (freezingURL.Equals(jobTrackerURL))
+                {
+                    workersStatus[freezingURL] = false;
+                    previousJobTrackerURL = jobTrackerURL;
+                    IWorker jobTracker = (IWorker)Activator.GetObject(typeof(IWorker), jobTrackerURL);
+                    jobTracker.freezeJobTracker();
+                    jobTrackerURL = getNewJobTracker();
+                    notifyNewJobTracker(jobTrackerURL);
+                }
+                else
+                    Console.WriteLine("The ID provided doesn't correspond to the job tracker's URL.");
+            }
+            catch (KeyNotFoundException)
+            {
+                Console.WriteLine("There is no job tracker with ID = " + splittedInstruction[1] + "!");
+            }
+            catch (ArgumentNullException)
+            {
+                Console.WriteLine("Impossible to freeze the job tracker: there isn't one assigned yet.");
+            }
+        }
+
+        private static string getNewJobTracker()
+        {
+            foreach (KeyValuePair<string, bool> worker in workersStatus)
+            {
+                if (worker.Value.Equals(true))
+                {
+                    Console.WriteLine("VOU MANDAR O " + worker.Key);
+                    return worker.Key;
+                }
+            }
+            return null;
+        }
+
+        private static void notifyNewJobTracker(string jobTrackerURL)
+        {
+            foreach (KeyValuePair<string, string> worker in workers)
+            {
+                IWorker target = (IWorker)Activator.GetObject(typeof(IWorker), worker.Value);
+                target.notifyNewJobTracker(jobTrackerURL);
+            }
         }
 
         private static void unfreezeJobTracker(string[] splittedInstruction)
         {
-            IWorker target = (IWorker)Activator.GetObject(typeof(IWorker), workers[splittedInstruction[1]]);
-            target.unfreezeJobTracker();
+            try
+            {
+                Console.WriteLine("Unfreezing job tracker " + workers[splittedInstruction[1]] + "...");
+                if (workers[splittedInstruction[1]].Equals(previousJobTrackerURL))
+                {
+                    IWorker jobTracker = (IWorker)Activator.GetObject(typeof(IWorker), previousJobTrackerURL);
+                    jobTracker.unfreezeJobTracker();
+                }
+                else
+                    Console.WriteLine("The ID provided doesn't correspond to the job tracker's URL!");
+            }
+            catch (KeyNotFoundException)
+            {
+                Console.WriteLine("There is no job tracker with ID = " + splittedInstruction[1] + "!");
+            }
+            catch (ArgumentNullException)
+            {
+                Console.WriteLine("Impossible to unfreeze the job tracker: there isn't one assigned yet!");
+            }
         }
     }
         
