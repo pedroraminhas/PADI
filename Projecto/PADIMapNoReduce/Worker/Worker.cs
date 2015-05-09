@@ -190,7 +190,7 @@ namespace PADIMapNoReduce
                             tasksStatus[inputPath][splits[i]] = PHASE_SEND;
                             IClient client = (IClient)Activator.GetObject(typeof(IClient), "tcp://localhost:" + clientPort + "/C");
                             client.sendResult(result, outputPath, splits[i] + ".out");
-                            Console.WriteLine("WORKER " + workerURL + " FINISHED " + splits[i]);
+                            Console.WriteLine("I just " + workerURL + " finished " + splits[i]);
                             tasksStatus[inputPath][splits[i]] = PHASE_CONCLUDED;
                         }
                         catch (SocketException)
@@ -202,7 +202,7 @@ namespace PADIMapNoReduce
                 else
                     throw new InvalidOperationException();
             }
-            catch (Exception e) //PARA TIRAR QUANDO PARAR DE SE ESBARDALHAR
+            catch (Exception e) //PARA TIRAR QUANDO PARAR DE SE ESBARDALHAR POR TUDO E MAIS UM PAR DE BOTAS FDS
             {
                 Console.WriteLine(e.Message);
                 Console.WriteLine(e.StackTrace);
@@ -245,7 +245,7 @@ namespace PADIMapNoReduce
                         }
                     }
                 }
-                throw (new System.Exception("could not invoke method"));
+                throw new Exception("Could not invoke method!");
             }
             else
             {
@@ -253,23 +253,23 @@ namespace PADIMapNoReduce
             }
         }
 
-        public void printSystemStatus(bool toJobTracker)    //InvalidOperationException se for chamado quando estão a ser alterados workers. É preciso fazer isto: http://stackoverflow.com/questions/604831/collection-was-modified-enumeration-operation-may-not-execute
+        public void printSystemStatus()    //InvalidOperationException se for chamado quando estão a ser alterados workers. É preciso fazer isto: http://stackoverflow.com/questions/604831/collection-was-modified-enumeration-operation-may-not-execute
         {
-            if (toJobTracker)
+            try
             {
-                Console.WriteLine("\n\nSYSTEM STATE\n");
-                Console.WriteLine("JOB TRACKER: " + jobTrackerURL);
+                Console.WriteLine("\n\n --- SYSTEM STATE ---\n");
                 Console.WriteLine("NUMBER OF REGISTERED WORKERS: " + workersStatus.Count);
                 List<string> failedWorkers = new List<string>();
                 foreach (KeyValuePair<string, string> entry in workersStatus)
                 {
-                    Console.WriteLine("\t" + entry.Key);
+                    Console.WriteLine("\t~ " + entry.Key);
                     if (entry.Value.Equals(WORKER_UNAVAILABLE))
                         failedWorkers.Add(entry.Key);
                 }
                 Console.WriteLine("NUMBER OF FAILED WORKERS: " + failedWorkers.Count);
                 foreach (string worker in failedWorkers)
-                    Console.WriteLine("\t" + worker);
+                    Console.WriteLine("\t~ " + worker);
+                Console.WriteLine("\n");
                 foreach (KeyValuePair<string, string> entry in workersStatus)
                 {
                     string workerURL = entry.Key;
@@ -279,19 +279,29 @@ namespace PADIMapNoReduce
                         worker.printJobsStatus();
                     }
                     else
+                        Console.WriteLine("\n\n --- SYSTEM STATE ---\n");
                         printJobsStatus();
                 }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.GetType());
+                Console.WriteLine(e.Message);
+                Console.WriteLine(e.StackTrace);
             }
         }
 
         public void printJobsStatus()
         {
-            foreach (KeyValuePair<string, Dictionary<int, string>> job in tasksStatus)
+            if (tasksStatus != null)
             {
-                string inputPath = job.Key;
-                Console.WriteLine("\nJOB: " + inputPath);
-                foreach (KeyValuePair<int, string> split in tasksStatus[inputPath])
-                    Console.WriteLine("SPLIT: " + split.Key + "\tSTATUS: " + split.Value);
+                foreach (KeyValuePair<string, Dictionary<int, string>> job in tasksStatus)
+                {
+                    string inputPath = job.Key;
+                    Console.WriteLine("\nJOB: " + inputPath);
+                    foreach (KeyValuePair<int, string> split in tasksStatus[inputPath])
+                        Console.WriteLine("SPLIT: " + split.Key + "\tSTATUS: " + split.Value);
+                }
             }
         }
 
@@ -332,18 +342,12 @@ namespace PADIMapNoReduce
                 jobTracker.notifyAvailability(myURL, WORKER_UNAVAILABLE);
                 myThread.Suspend();
             }
-            catch (NullReferenceException) // VER MELHOR ISTO
-            {
-                // If it reaches this point, it means there is no job being done and we don't suspend it.
-            }
             catch (ArgumentNullException)
             {
                 Console.WriteLine("Job tracker URL isn't known yet...");
             }
             catch (ThreadStateException e)
-            {
-                Console.WriteLine(e.Message);
-            }
+            { }
         }
 
         public void unfreezeWorker()
@@ -390,7 +394,6 @@ namespace PADIMapNoReduce
                 workersStatus = previousJobTracker.getWorkersStatus();
             }
             jobTrackerURL = newJobTrackerURL;
-            Console.WriteLine("WORKER " + myURL + " NOW KNOWS ABOUT " + jobTrackerURL);
         }
 
         public Dictionary<string, string> getWorkersStatus()

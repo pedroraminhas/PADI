@@ -1,10 +1,14 @@
+SLOWW 1 1
 WORKER 1 tcp://localhost:20001/PM tcp://localhost:30001/W
-STATUS
 WORKER 2 tcp://localhost:20001/PM tcp://localhost:30002/W tcp://localhost:30001/W
 FREEZEC 1
+FREEZEC 2
+STATUS
+UNFREEZEC 1
 STATUS
 SUBMIT tcp://localhost:30001/W ..\..\..\Input\test.txt ..\..\..\result\ 6 Mapper ..\..\..\LibMapper\bin\Debug\LibMapper.dll
-UNFREEZEC 1
+UNFREEZEC 2
+STATUS
 SUBMIT tcp://localhost:30001/W ..\..\..\Input\test.txt ..\..\..\result\ 6 Mapper ..\..\..\LibMapper\bin\Debug\LibMapper.dll
 FREEZEC 2
 WORKER 3 tcp://localhost:20001/PM tcp://localhost:30003/W tcp://localhost:30001/W

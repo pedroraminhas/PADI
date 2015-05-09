@@ -13,7 +13,7 @@ namespace PADIMapNoReduce {
         void notify(string workerURL);
         void setURLs(string workerURL, string jobTrackerURL);
         void doMapTask(List<int> splits, string workerURL, string inputPath, string outputPath, byte[] code, string className, int nSplits, int clientPort);
-        void printSystemStatus(bool toJobTrackers);
+        void printSystemStatus();
         void printJobsStatus();
         void slowWorker(int seconds);
         void freezeWorker();
