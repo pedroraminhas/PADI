@@ -14,12 +14,14 @@ namespace PADIMapNoReduce
 {
     static class PuppetMaster
     {
-        static int puppetMasterPort;
-        static string myURL;
+        private static int puppetMasterPort;
+        private static string myURL;
         //static string[] puppetMastersURLs;
-        static string jobTrackerURL;
-        static Dictionary<string, string> workers = new Dictionary<string, string>();
-        private static Dictionary<string, bool> workersStatus = new Dictionary<string, bool>();     // false if frozen
+        private static string jobTrackerURL;
+        // The list contains the URL at 0 and status at 1 (status can be AVAILABLE or UNAVAILABLE)
+        private static Dictionary<string, string[]> workersStatus = new Dictionary<string, string[]>();
+        private const string AVAILABLE = "AVAILABLE";
+        private const string UNAVAILABLE = "UNAVAILABLE";
 
         [STAThread]
         static void Main(string[] args)
@@ -134,8 +136,7 @@ namespace PADIMapNoReduce
                     Console.WriteLine("Starting a worker at " + serviceURL + "...");
                     Process.Start(@"..\..\..\Worker\bin\Debug\Server.exe", serviceURL + " " + entryURL);
                 }
-                workers.Add(workerID, serviceURL);
-                workersStatus.Add(serviceURL, true);
+                workersStatus.Add(workerID, new string[] {serviceURL, AVAILABLE});
             }
             else
             {
@@ -163,18 +164,18 @@ namespace PADIMapNoReduce
         private static void getStatus()
         {
             Console.WriteLine("Printing system's status...");
-            Console.WriteLine("\n\n --- SYSTEM STATE ---\n");
+            Console.WriteLine("\n\n --- SYSTEM STATE: ABOUT THE SYSTEM ---\n");
             if (jobTrackerURL != null)
                 Console.WriteLine("JOB TRACKER: " + jobTrackerURL + "\n");
             else
                 Console.WriteLine("JOB TRACKER: NOT SET\n");
             Console.WriteLine("JOB TRACKER ASPECT OF WORKERS");
-            foreach (KeyValuePair<string, bool> worker in workersStatus)
+            foreach (KeyValuePair<string, string[]> worker in workersStatus)
             {
-                if (worker.Value)
-                    Console.WriteLine("\t~ " + worker.Key + " - AVAILABLE");
+                if (worker.Value[1].Equals(AVAILABLE))
+                    Console.WriteLine("\t~ " + worker.Value[0] + " - AVAILABLE");
                 else
-                    Console.WriteLine("\t~ " + worker.Key + " - UNAVAILABLE");
+                    Console.WriteLine("\t~ " + worker.Value[0] + " - UNAVAILABLE");
             }
             Console.WriteLine("\n");
 
@@ -190,8 +191,9 @@ namespace PADIMapNoReduce
         {
             try
             {
-                Console.WriteLine("Slowing worker at " + workers[workerID] + " for " + seconds + " seconds...");
-                IWorker target = (IWorker)Activator.GetObject(typeof(IWorker), workers[workerID]);
+                string workerURL = workersStatus[workerID][0];
+                Console.WriteLine("Slowing worker at " + workerURL + " for " + seconds + " seconds...");
+                IWorker target = (IWorker)Activator.GetObject(typeof(IWorker), workerURL);
                 target.slowWorker(int.Parse(seconds));
             }
             catch (KeyNotFoundException)
@@ -208,8 +210,9 @@ namespace PADIMapNoReduce
         {
             try
             {
-                Console.WriteLine("Freezing worker at " +  workers[workerID] + "...");
-                IWorker target = (IWorker)Activator.GetObject(typeof(IWorker), workers[workerID]);
+                string workerURL = workersStatus[workerID][0];
+                Console.WriteLine("Freezing worker at " +  workerURL + "...");
+                IWorker target = (IWorker)Activator.GetObject(typeof(IWorker), workerURL);
                 target.freezeWorker();
             }
             catch (SocketException e)
@@ -224,15 +227,16 @@ namespace PADIMapNoReduce
 
         private static void unfreezeWorker(string workerID)
         {
+            string workerURL = workersStatus[workerID][0];
             try
             {
-                Console.WriteLine("Unfreezing worker at " + workers[workerID] + "...");
-                IWorker worker = (IWorker)Activator.GetObject(typeof(IWorker), workers[workerID]);
+                Console.WriteLine("Unfreezing worker at " + workerURL + "...");
+                IWorker worker = (IWorker)Activator.GetObject(typeof(IWorker), workerURL);
                 worker.unfreezeWorker();
             }
             catch (KeyNotFoundException)
             {
-                Console.WriteLine("There is no worker with ID = " + workers[workerID] + "!");
+                Console.WriteLine("There is no worker with ID = " + workerURL + "!");
             }
             catch (SocketException e)
             {
@@ -244,11 +248,12 @@ namespace PADIMapNoReduce
         {
             try
             {
-                string freezingURL = workers[splittedInstruction[1]];
+                string freezingID = splittedInstruction[1];
+                string freezingURL = workersStatus[freezingID][0];
                 Console.WriteLine("Freezing job tracker at " + freezingURL + "...");
                 if (freezingURL.Equals(jobTrackerURL))
                 {
-                    workersStatus[freezingURL] = false;
+                    workersStatus[freezingID][1] = UNAVAILABLE;
                     IWorker jobTracker = (IWorker)Activator.GetObject(typeof(IWorker), jobTrackerURL);
                     jobTracker.freezeJobTracker();
                     jobTrackerURL = getNewJobTracker();
@@ -256,10 +261,6 @@ namespace PADIMapNoReduce
                 }
                 else
                     Console.WriteLine("\tID " + splittedInstruction[1] + " doesn't correspond to the job tracker's URL!");
-            }
-            catch (KeyNotFoundException)
-            {
-                Console.WriteLine("\tThere is no job tracker with ID = " + splittedInstruction[1] + "!");
             }
             catch (ArgumentNullException)
             {
@@ -269,19 +270,19 @@ namespace PADIMapNoReduce
 
         private static string getNewJobTracker()
         {
-            foreach (KeyValuePair<string, bool> worker in workersStatus)
-                if (worker.Value.Equals(true))
-                    return worker.Key;
+            foreach (KeyValuePair<string, string[]> worker in workersStatus)
+                if (worker.Value[1].Equals(AVAILABLE))
+                    return worker.Value[0];
             return null;
         }
 
         private static void notifyNewJobTracker(string jobTrackerURL)
         {
             if (jobTrackerURL != null)
-                foreach (KeyValuePair<string, string> worker in workers)
+                foreach (KeyValuePair<string, string[]> worker in workersStatus)
                 {
                     Console.WriteLine("\tNotifying " + worker.Value + " about the new job tracker...");
-                    IWorker target = (IWorker)Activator.GetObject(typeof(IWorker), worker.Value);
+                    IWorker target = (IWorker)Activator.GetObject(typeof(IWorker), worker.Value[0]);
                     target.notifyNewJobTracker(jobTrackerURL);
                 }
             else
@@ -292,9 +293,9 @@ namespace PADIMapNoReduce
         {
             try
             {
-                string unfreezingURL = workers[unfreezingID];
+                string unfreezingURL = workersStatus[unfreezingID][0];
                 Console.WriteLine("Unfreezing job tracker " + unfreezingURL + "...");
-                workersStatus[unfreezingURL] = true;
+                workersStatus[unfreezingID][1] = AVAILABLE;
                 IWorker frozenJobTracker = (IWorker)Activator.GetObject(typeof(IWorker), unfreezingURL);
                 frozenJobTracker.unfreezeJobTracker();
                 if (jobTrackerURL == null)

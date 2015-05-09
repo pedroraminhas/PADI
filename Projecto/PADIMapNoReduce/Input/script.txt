@@ -1,8 +1,8 @@
 SLOWW 1 1
 WORKER 1 tcp://localhost:20001/PM tcp://localhost:30001/W
 WORKER 2 tcp://localhost:20001/PM tcp://localhost:30002/W tcp://localhost:30001/W
-FREEZEC 1
 FREEZEC 2
+FREEZEC 1
 STATUS
 UNFREEZEC 1
 STATUS

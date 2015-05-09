@@ -257,7 +257,7 @@ namespace PADIMapNoReduce
         {
             try
             {
-                Console.WriteLine("\n\n --- SYSTEM STATE ---\n");
+                Console.WriteLine("\n\n --- SYSTEM STATE: ABOUT THE JOB TRACKER ---\n");
                 Console.WriteLine("NUMBER OF REGISTERED WORKERS: " + workersStatus.Count);
                 List<string> failedWorkers = new List<string>();
                 foreach (KeyValuePair<string, string> entry in workersStatus)
@@ -279,7 +279,6 @@ namespace PADIMapNoReduce
                         worker.printJobsStatus();
                     }
                     else
-                        Console.WriteLine("\n\n --- SYSTEM STATE ---\n");
                         printJobsStatus();
                 }
             }
@@ -297,10 +296,12 @@ namespace PADIMapNoReduce
             {
                 foreach (KeyValuePair<string, Dictionary<int, string>> job in tasksStatus)
                 {
+                    Console.WriteLine(" --- SYSTEM STATE: ABOUT JOBS ---\n");
                     string inputPath = job.Key;
-                    Console.WriteLine("\nJOB: " + inputPath);
+                    Console.WriteLine("JOB: " + inputPath);
                     foreach (KeyValuePair<int, string> split in tasksStatus[inputPath])
-                        Console.WriteLine("SPLIT: " + split.Key + "\tSTATUS: " + split.Value);
+                        Console.WriteLine("SPLIT " + split.Key + ": " + split.Value);
+                    Console.WriteLine("\n");
                 }
             }
         }
@@ -346,7 +347,7 @@ namespace PADIMapNoReduce
             {
                 Console.WriteLine("Job tracker URL isn't known yet...");
             }
-            catch (ThreadStateException e)
+            catch (ThreadStateException)
             { }
         }
 
