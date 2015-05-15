@@ -1,0 +1,7 @@
+C:\Users\jog\Documents\Visual Studio 2013\Projects\MapperTransfer\LibMapper3\bin\Debug\LibMapperParadiseCount.dll
+C:\Users\jog\Documents\Visual Studio 2013\Projects\MapperTransfer\LibMapper3\bin\Debug\LibMapperParadiseCount.pdb
+C:\Users\jog\Documents\Visual Studio 2013\Projects\MapperTransfer\LibMapper3\bin\Debug\LibPADIMapNoReduce.dll
+C:\Users\jog\Documents\Visual Studio 2013\Projects\MapperTransfer\LibMapper3\bin\Debug\LibPADIMapNoReduce.pdb
+C:\Users\jog\Documents\Visual Studio 2013\Projects\MapperTransfer\LibMapper3\obj\Debug\LibMapperParadiseCount.csprojResolveAssemblyReference.cache
+C:\Users\jog\Documents\Visual Studio 2013\Projects\MapperTransfer\LibMapper3\obj\Debug\LibMapperParadiseCount.dll
+C:\Users\jog\Documents\Visual Studio 2013\Projects\MapperTransfer\LibMapper3\obj\Debug\LibMapperParadiseCount.pdb

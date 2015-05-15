@@ -47,3 +47,10 @@ C:\Users\Pedro Raminhas\Desktop\pergaminho dos deuses\PADIMapNoReduce\Client\bin
 C:\Users\Pedro Raminhas\Desktop\pergaminho dos deuses\PADIMapNoReduce\Client\obj\Debug\Client.csprojResolveAssemblyReference.cache
 C:\Users\Pedro Raminhas\Desktop\pergaminho dos deuses\PADIMapNoReduce\Client\obj\Debug\Client.exe
 C:\Users\Pedro Raminhas\Desktop\pergaminho dos deuses\PADIMapNoReduce\Client\obj\Debug\Client.pdb
+C:\Users\Pedro Raminhas\Documents\GitHub\PADI\Projecto\PADIMapNoReduce\Client\bin\Debug\Client.exe
+C:\Users\Pedro Raminhas\Documents\GitHub\PADI\Projecto\PADIMapNoReduce\Client\bin\Debug\Client.pdb
+C:\Users\Pedro Raminhas\Documents\GitHub\PADI\Projecto\PADIMapNoReduce\Client\bin\Debug\LibPADIMapNoReduce.dll
+C:\Users\Pedro Raminhas\Documents\GitHub\PADI\Projecto\PADIMapNoReduce\Client\bin\Debug\LibPADIMapNoReduce.pdb
+C:\Users\Pedro Raminhas\Documents\GitHub\PADI\Projecto\PADIMapNoReduce\Client\obj\Debug\Client.csprojResolveAssemblyReference.cache
+C:\Users\Pedro Raminhas\Documents\GitHub\PADI\Projecto\PADIMapNoReduce\Client\obj\Debug\Client.exe
+C:\Users\Pedro Raminhas\Documents\GitHub\PADI\Projecto\PADIMapNoReduce\Client\obj\Debug\Client.pdb

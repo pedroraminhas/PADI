@@ -1,0 +1,7 @@
+C:\Users\jog\Documents\Visual Studio 2013\Projects\MapperTransfer\LibMapper2\bin\Debug\LibMapperCharCount.dll
+C:\Users\jog\Documents\Visual Studio 2013\Projects\MapperTransfer\LibMapper2\bin\Debug\LibMapperCharCount.pdb
+C:\Users\jog\Documents\Visual Studio 2013\Projects\MapperTransfer\LibMapper2\bin\Debug\LibPADIMapNoReduce.dll
+C:\Users\jog\Documents\Visual Studio 2013\Projects\MapperTransfer\LibMapper2\bin\Debug\LibPADIMapNoReduce.pdb
+C:\Users\jog\Documents\Visual Studio 2013\Projects\MapperTransfer\LibMapper2\obj\Debug\LibMapperCharCount.csprojResolveAssemblyReference.cache
+C:\Users\jog\Documents\Visual Studio 2013\Projects\MapperTransfer\LibMapper2\obj\Debug\LibMapperCharCount.dll
+C:\Users\jog\Documents\Visual Studio 2013\Projects\MapperTransfer\LibMapper2\obj\Debug\LibMapperCharCount.pdb

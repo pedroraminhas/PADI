@@ -41,14 +41,24 @@ namespace PADIMapNoReduce
 
         public static void parseScript(string inputPath)
         {
-            string line;
+           
+                string line;
                 System.IO.StreamReader file = new System.IO.StreamReader(inputPath);
                 instructions = new ArrayList();
                 while ((line = file.ReadLine()) != null)
                 {
+                     try
+            {
                     if (!line[0].Equals('%'))
                         instructions.Add(line);
+            }
+                     catch (Exception e)
+                     {
+                         Console.WriteLine("Writing the line");
+                         Console.WriteLine(line);
+                     }
                 }
+          
         }
 
         private void button_submit_Click(object sender, EventArgs e)
@@ -118,6 +128,11 @@ namespace PADIMapNoReduce
             {
                 MessageBox.Show(errorNoInstruction);
             }
+        }
+
+        private void textBox_instruction_TextChanged(object sender, EventArgs e)
+        {
+            instruction = this.textBox_instruction.Text.ToString();
         }
 
     }

@@ -1,0 +1,5 @@
+C:\Users\jog\Documents\Visual Studio 2013\Projects\MapperTransfer\LibPADIMapNoReduce\bin\Debug\LibPADIMapNoReduce.dll
+C:\Users\jog\Documents\Visual Studio 2013\Projects\MapperTransfer\LibPADIMapNoReduce\bin\Debug\LibPADIMapNoReduce.pdb
+C:\Users\jog\Documents\Visual Studio 2013\Projects\MapperTransfer\LibPADIMapNoReduce\obj\Debug\LibPADIMapNoReduce.csprojResolveAssemblyReference.cache
+C:\Users\jog\Documents\Visual Studio 2013\Projects\MapperTransfer\LibPADIMapNoReduce\obj\Debug\LibPADIMapNoReduce.dll
+C:\Users\jog\Documents\Visual Studio 2013\Projects\MapperTransfer\LibPADIMapNoReduce\obj\Debug\LibPADIMapNoReduce.pdb

@@ -10,6 +10,10 @@ using System.Timers;
 
 namespace PADIMapNoReduce
 {
+    /*
+     * Class Worker represents a worker in the system which performs jobs
+     * submitted by the client
+     */ 
     public class Worker
     {
         static void Main(string[] args)
@@ -42,6 +46,9 @@ namespace PADIMapNoReduce
         }
     }
 
+    /*
+     * Internal Class WorkerServices represents a remote object of class worker
+     */ 
     internal class WorkerServices : MarshalByRefObject, IWorker {
         private string myURL;
         private string jobTrackerURL = "NOT SET";
@@ -58,17 +65,20 @@ namespace PADIMapNoReduce
         private bool jobTrackerIsFrozen = false;
         Thread myThread;
         
+        //change the status of the worker with workerURL to IDLE
         public void notify(string workerURL)
         {
             workersStatus.Add(workerURL, WORKER_IDLE);
         }
 
+        //Sets the url of the worker and the url of the jobTracker
         public void setURLs(string myURL, string jobTrackerURL)
         {
             this.myURL = myURL;
             this.jobTrackerURL = jobTrackerURL;
         }
 
+        // Split a file and assigns a job (can be one or more splits) to the workers
         public void submit(string inputPath, string outputPath, int nSplits, string className, byte[] code, int clientPort) {
             if (!jobTrackerIsFrozen)
             {
@@ -97,10 +107,9 @@ namespace PADIMapNoReduce
             return splitsPerWorker;
         }
 
+        //Creates a thread that assigns a job to the worker
         public void assignMapTask(string inputPath, string outputPath, int nSplits, string className, byte[] code, Dictionary<string, List<int>> splitsPerWorker, int clientPort)
         {
-            try
-            {
                 List<string> availableWorkers = getAvailableWorkers();
                 for (int i = 0; i < availableWorkers.Count; i++)
                 {
@@ -115,15 +124,10 @@ namespace PADIMapNoReduce
                         Thread.Sleep(1);
                     }
                 }
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.GetType());
-                Console.WriteLine(e.Message);
-                Console.WriteLine(e.StackTrace);
-            }
+        
         }
 
+        //Gets a list of available workers
         public List<string> getAvailableWorkers()
         {
             List<String> availableWorkers = new List<string>();
@@ -137,6 +141,7 @@ namespace PADIMapNoReduce
             return availableWorkers;
         }
 
+        // Asks the client for the content of the split
         public string getSplitContent(int split, string inputPath, int nSplits, int clientPort)
         {
             tasksStatus[inputPath][split] = PHASE_SPLIT;
@@ -153,6 +158,9 @@ namespace PADIMapNoReduce
             return content;
         }
 
+        /* Calls a method in the worker to execute the work, if the worker is not available re-assign
+        *  the job to the other available workers
+        */  
         public void doTask(string inputPath, string outputPath, int nSplits, string className, byte[] code, string workerURL, List<int> splits, int clientPort)
         {
             try
@@ -160,6 +168,7 @@ namespace PADIMapNoReduce
                 IWorker worker = (IWorker)Activator.GetObject(typeof(IWorker), workerURL);
                 worker.doMapTask(splits, workerURL, inputPath, outputPath, code, className, nSplits, clientPort);
             }
+            //if the worker is not available, re-assign the job to the other workers
             catch (InvalidOperationException)
             {
                 Console.WriteLine("Worker " + workerURL + " is not available: redistributing splits...");
@@ -169,6 +178,9 @@ namespace PADIMapNoReduce
             }
         }
 
+        /*
+         * Asks the client for the assigned split and performs the work
+         */
         public void doMapTask(List<int> splits, string workerURL, string inputPath, string outputPath, byte[] code, string className, int nSplits, int clientPort)
         {
             try
@@ -202,13 +214,14 @@ namespace PADIMapNoReduce
                 else
                     throw new InvalidOperationException();
             }
-            catch (Exception e) //PARA TIRAR QUANDO PARAR DE SE ESBARDALHAR POR TUDO E MAIS UM PAR DE BOTAS FDS
+            catch (Exception e) 
             {
                 Console.WriteLine(e.Message);
                 Console.WriteLine(e.StackTrace);
             }
         }
 
+        //Re-assigns the failed splits to the other available workers
         public Dictionary<string, List<int>> giveFailedSplits(List<int> splits)
         {
             Dictionary<string, List<int>> splitsPerWorker = new Dictionary<string, List<int>>();
@@ -226,6 +239,7 @@ namespace PADIMapNoReduce
             return splitsPerWorker;
         }
         
+        //Gets the dll and invokes the function to process the split
         public IList<KeyValuePair<string, string>> processSplit(string inputPath, int split, string mySplitContent, byte[] code, string className)
         {
             tasksStatus[inputPath][split] = PHASE_PROCESSING;
@@ -253,7 +267,12 @@ namespace PADIMapNoReduce
             }
         }
 
-        public void printSystemStatus()    //InvalidOperationException se for chamado quando estão a ser alterados workers. É preciso fazer isto: http://stackoverflow.com/questions/604831/collection-was-modified-enumeration-operation-may-not-execute
+        /*
+         * Prints the status of the system
+         * Number of registered workers, Number of failed workers, status of each worker and the phase 
+         * of the job
+         */ 
+        public void printSystemStatus()    
         {
             try
             {
@@ -290,6 +309,7 @@ namespace PADIMapNoReduce
             }
         }
 
+        //Prints the status of the job
         public void printJobsStatus()
         {
             if (tasksStatus != null)
@@ -306,6 +326,7 @@ namespace PADIMapNoReduce
             }
         }
 
+        //Slows worker the given seconds
         public void slowWorker(int seconds) {
             TimeSpan t = DateTime.Now.TimeOfDay.Add(new TimeSpan(0, 0, Convert.ToInt32(seconds)));
             bool canPass = false;
@@ -314,8 +335,8 @@ namespace PADIMapNoReduce
             {
                 try
                 {
-                    if (myThread.IsAlive)
-                        canPass = true;
+                    if (myThread.IsAlive)  //Slows the main thread only if it is active, because the thread that executes 
+                        canPass = true;    //this method is diferent that the thread that is executing the job
                 }
                 catch (NullReferenceException) { }
             }
@@ -325,7 +346,7 @@ namespace PADIMapNoReduce
                 while (DateTime.Now.TimeOfDay <= t) { }
                 myThread.Resume();
             }
-            catch (Exception e) //VER QUAL A EXCEPÇÃO QUE LANÇA
+            catch (Exception e)
             {
                 Console.WriteLine(e.GetType());
                 Console.WriteLine(e.Message);
@@ -333,6 +354,7 @@ namespace PADIMapNoReduce
             }
         }
 
+        //Freezes the worker
         public void freezeWorker()
         {
             try
@@ -341,7 +363,7 @@ namespace PADIMapNoReduce
                 isFrozen = true;
                 IWorker jobTracker = (IWorker)Activator.GetObject(typeof(IWorker), jobTrackerURL);
                 jobTracker.notifyAvailability(myURL, WORKER_UNAVAILABLE);
-                myThread.Suspend();
+                myThread.Suspend();         //Suspend the thread that is executing the job
             }
             catch (ArgumentNullException)
             {
@@ -351,6 +373,7 @@ namespace PADIMapNoReduce
             { }
         }
 
+        //Unfreezes the worker
         public void unfreezeWorker()
         {
             if (isFrozen)
@@ -361,7 +384,7 @@ namespace PADIMapNoReduce
                     isFrozen = false;
                     IWorker jobTracker = (IWorker)Activator.GetObject(typeof(IWorker), jobTrackerURL);
                     jobTracker.notifyAvailability(myURL, WORKER_IDLE);
-                    myThread.Resume();
+                    myThread.Resume();      //Resumes the thread that is executing the job
                 }
                 catch (ThreadStateException)
                 { /* If it reaches this point, it means there was no job being done and we can't resume the worker thread. */ }
@@ -376,17 +399,20 @@ namespace PADIMapNoReduce
                 Console.WriteLine("This worker wasn't frozen!");
         }
 
+        //Change the state of the worker
         public void notifyAvailability(string workerURL, string state)
         {
             workersStatus[workerURL] = state;
         }
         
+        //Freezes the job tracker
         public void freezeJobTracker()
         {
             Console.WriteLine("FREEZE!");
             jobTrackerIsFrozen = true;
         }
 
+        //Gets the status of the workers from the failed job tracker and sets the job tracker url to the url of the new one
         public void notifyNewJobTracker(string newJobTrackerURL)
         {
             if (newJobTrackerURL.Equals(myURL))
@@ -397,11 +423,13 @@ namespace PADIMapNoReduce
             jobTrackerURL = newJobTrackerURL;
         }
 
+        //Get worker status
         public Dictionary<string, string> getWorkersStatus()
         {
             return workersStatus;
         }
 
+        //unfreeze the job tracker
         public void unfreezeJobTracker()
         {
             Console.WriteLine("UNFREEZE!");

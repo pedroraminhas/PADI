@@ -12,6 +12,10 @@ using System.Threading;
 
 namespace PADIMapNoReduce
 {
+    /*
+     * Class PuppetMaster
+     * Start clients and workers, submit jobs and inject delays
+     */
     static class PuppetMaster
     {
         private static int puppetMasterPort;
@@ -23,6 +27,7 @@ namespace PADIMapNoReduce
         private const string AVAILABLE = "AVAILABLE";
         private const string UNAVAILABLE = "UNAVAILABLE";
 
+        //Main method, initiate first port at 20001
         [STAThread]
         static void Main(string[] args)
         {
@@ -44,6 +49,7 @@ namespace PADIMapNoReduce
             }
         }
 
+        //Creates a tcp channel with the given port and register it
         private static void registerChannel(int port)
         {
             TcpChannel channel = new TcpChannel(port);
@@ -51,6 +57,7 @@ namespace PADIMapNoReduce
             RemotingConfiguration.RegisterWellKnownServiceType(typeof(PuppetMasterServices), "PM", WellKnownObjectMode.Singleton);
         }
 
+        //Creates other PuppetMasters by reading their ports from PMconfig.txt
         private static string[] startPuppetMasters()
         {
             string[] ports = System.IO.File.ReadAllLines(@"..\..\PMconfig.txt");
@@ -61,6 +68,7 @@ namespace PADIMapNoReduce
             return ports;
         }
 
+        //Start graphical user interface
         public static void startGUI()
         {
             Application.EnableVisualStyles();
@@ -68,6 +76,11 @@ namespace PADIMapNoReduce
             Application.Run(new GUI());
         }
 
+        /*
+         * Given an instruction, call the corresponding method to compute the instruction
+         * For every instruction initiate a thread, and sleeps the main one in order to execute 
+         * the instruction
+         */ 
         public static void splitInstruction(string instruction)
         {
             string[] splittedInstruction = instruction.Split(' ');
@@ -146,21 +159,24 @@ namespace PADIMapNoReduce
             }
         }
 
+        // initiate a client and submits the job along with the URL of jobTracker
         public static void submit(string[] splittedInstruction)
         {
-            Random r = new Random();
-            int clientPort = r.Next(10001, 19999);
-            Console.WriteLine("Sending a job from client port = " + clientPort + "...");
-            string[] parameters = { jobTrackerURL, splittedInstruction[2], splittedInstruction[3], splittedInstruction[4], splittedInstruction[5], splittedInstruction[6], clientPort.ToString() };
-            Process.Start(@"..\..\..\Client\bin\Debug\Client.exe", String.Join(" ", parameters));
+                Random r = new Random();
+                int clientPort = r.Next(10001, 19999);   //choose a random port number for the client betweeen 10001 and 19999
+                Console.WriteLine("Sending a job from client port = " + clientPort + "...");
+                string[] parameters = { jobTrackerURL, splittedInstruction[2], splittedInstruction[3], splittedInstruction[4], splittedInstruction[5], splittedInstruction[6], clientPort.ToString() };
+                Process.Start(@"..\..\..\Client\bin\Debug\Client.exe", String.Join(" ", parameters));
         }
 
+        //Pause the thread for given seconds
         public static void wait(string seconds)
         {
             Console.WriteLine("Waiting " + seconds + " seconds...");
             Thread.Sleep(int.Parse(seconds) * 1000);
         }
 
+        //Prints the status of the jobTracker and workers
         private static void getStatus()
         {
             Console.WriteLine("Printing system's status...");
@@ -182,11 +198,12 @@ namespace PADIMapNoReduce
             try
             {
                 IWorker jobTracker = (IWorker)Activator.GetObject(typeof(IWorker), jobTrackerURL);
-                jobTracker.printSystemStatus();
+                jobTracker.printSystemStatus();     //Makes the jobTracker print the status of all workers
             }
             catch (ArgumentNullException) { }
         }
 
+        //Slows worker with workerID the given seconds
         private static void slowWorker(string workerID, string seconds)
         {
             try
@@ -206,6 +223,7 @@ namespace PADIMapNoReduce
             }
         }
 
+        //Pauses the execution of the Worker with WorkerID 
         private static void freezeWorker(string workerID)
         {
             try
@@ -225,6 +243,7 @@ namespace PADIMapNoReduce
             }
         }
 
+        //Resumes the execution of the worker with workerID
         private static void unfreezeWorker(string workerID)
         {
             string workerURL = workersStatus[workerID][0];
@@ -244,6 +263,7 @@ namespace PADIMapNoReduce
             }
         }
 
+        //Pauses the execution of the jobTracker
         private static void freezeJobTracker(string[] splittedInstruction)
         {
             try
@@ -256,7 +276,7 @@ namespace PADIMapNoReduce
                     workersStatus[freezingID][1] = UNAVAILABLE;
                     IWorker jobTracker = (IWorker)Activator.GetObject(typeof(IWorker), jobTrackerURL);
                     jobTracker.freezeJobTracker();
-                    jobTrackerURL = getNewJobTracker();
+                    jobTrackerURL = getNewJobTracker(); //Gets a new jobTracker to tolerate the failure of the old one
                     notifyNewJobTracker(jobTrackerURL);
                 }
                 else
@@ -268,6 +288,7 @@ namespace PADIMapNoReduce
             }
         }
 
+        
         private static string getNewJobTracker()
         {
             foreach (KeyValuePair<string, string[]> worker in workersStatus)
@@ -276,6 +297,7 @@ namespace PADIMapNoReduce
             return null;
         }
 
+        //Notify workers of the existence of the URL of the new jobTracker
         private static void notifyNewJobTracker(string jobTrackerURL)
         {
             if (jobTrackerURL != null)
@@ -289,6 +311,7 @@ namespace PADIMapNoReduce
                 Console.WriteLine("There are no available job trackers!");
         }
 
+        //Unfreeze the Job Tracker
         private static void unfreezeJobTracker(string unfreezingID)
         {
             try
@@ -298,7 +321,7 @@ namespace PADIMapNoReduce
                 workersStatus[unfreezingID][1] = AVAILABLE;
                 IWorker frozenJobTracker = (IWorker)Activator.GetObject(typeof(IWorker), unfreezingURL);
                 frozenJobTracker.unfreezeJobTracker();
-                if (jobTrackerURL == null)
+                if (jobTrackerURL == null)          //if that is no jobTracker, notify about the existence
                 {
                     jobTrackerURL = unfreezingURL;
                     notifyNewJobTracker(jobTrackerURL);
@@ -315,8 +338,12 @@ namespace PADIMapNoReduce
         }
     }
         
+    /*
+     * Internal Class PuppetMasterServices represents a remote object
+     */ 
     internal class PuppetMasterServices : MarshalByRefObject, IPuppetMasters
     {
+        //Calls method from the PuppetMaster class to create workers
         public void startWorker(string[] parameters)
         {
             PuppetMaster.startWorker(parameters);

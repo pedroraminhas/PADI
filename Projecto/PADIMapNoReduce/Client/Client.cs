@@ -8,7 +8,11 @@ using System.IO;
 
 
 namespace PADIMapNoReduce {
-
+    /*
+     * Class Client submits a job to the jobTracker 
+     * it's remote class provides the content of the split to a worker
+     * 
+     */
     public class Client
     {
         static void Main(string[] args)
@@ -24,9 +28,19 @@ namespace PADIMapNoReduce {
             int nSplits = int.Parse(args[3]);
             string mapperName = args[4];
             string dllPath = args[5];
-            submit(jobTrackerURL, inputPath, outputPath, nSplits, mapperName, dllPath, port);
+            try
+            {
+                submit(jobTrackerURL, inputPath, outputPath, nSplits, mapperName, dllPath, port);
+            }
+            catch (Exception e) {
+                Console.WriteLine(e.GetType());
+                Console.WriteLine(e.Message);
+                Console.WriteLine(e.StackTrace);
+                Console.ReadLine();
+            }
         }
 
+        //Reads the file, deletes the files from previous works and submits a job to the jobTracker
         private static void submit(string jobTrackerURL, string inputPath, string outputPath, int nSplits, string mapperName, string dllPath, int port)
         {
             byte[] code = File.ReadAllBytes(dllPath);
@@ -59,9 +73,13 @@ namespace PADIMapNoReduce {
         }
     }
 
+    /*
+     * Class ClientServices used to remote invocations from workers and Puppet Master
+     */
     internal class ClientServices : MarshalByRefObject, IClient {
         Dictionary<string, int> nFileLines = new Dictionary<string, int>();
 
+        //Returns to the worker the content of the split asked in form of a string
         public string getSplitContent(int splitNumber, string inputPath, int nSplits) {            
             int nLines;
             if (nFileLines.ContainsKey(inputPath))
@@ -98,11 +116,12 @@ namespace PADIMapNoReduce {
             }
         }
 
+        //writes the result of a job in a file with the name of the split identifier
         public void sendResult(IList<KeyValuePair<string, string>> result, string outputPath, string splitIdentifier) {
             if (result != null)
             {
                 if (!Directory.Exists(outputPath))
-                    Directory.CreateDirectory(outputPath);
+                    Directory.CreateDirectory(outputPath);      //if the directory doesn't exist, create it
                 foreach (KeyValuePair<string, string> p in result)
                     System.IO.File.AppendAllText(outputPath + splitIdentifier, p.Key + " " + p.Value + Environment.NewLine);
             }

@@ -140,6 +140,7 @@
             this.textBox_instruction.Name = "textBox_instruction";
             this.textBox_instruction.Size = new System.Drawing.Size(342, 20);
             this.textBox_instruction.TabIndex = 23;
+            this.textBox_instruction.TextChanged += new System.EventHandler(this.textBox_instruction_TextChanged);
             // 
             // openFileDialog
             // 

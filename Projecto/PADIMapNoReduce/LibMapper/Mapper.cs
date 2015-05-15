@@ -9,7 +9,7 @@ namespace LibMapper {
         {
             IList<KeyValuePair<string, string>> result = new List<KeyValuePair<string, string>>();
             
-            //ir buscar conteudo da linha ao cliente
+            //Gets the content of the line from the client
             IList<KeyValuePair<string, string>> resultAux = new List<KeyValuePair<string, string>>();
             string[] words = fileLine.Split(' ');
             string pattern = "[^0-9a-z]+";

@@ -1,0 +1,7 @@
+C:\Users\jog\Documents\Visual Studio 2013\Projects\MapperTransfer\LibMapper2\bin\Debug\LibPADIMapNoReduce.dll
+C:\Users\jog\Documents\Visual Studio 2013\Projects\MapperTransfer\LibMapper2\bin\Debug\LibPADIMapNoReduce.pdb
+C:\Users\jog\Documents\Visual Studio 2013\Projects\MapperTransfer\LibMapper2\obj\Debug\LibMapper2.csprojResolveAssemblyReference.cache
+C:\Users\jog\Documents\Visual Studio 2013\Projects\MapperTransfer\LibMapper2\bin\Debug\LibMapper2.dll
+C:\Users\jog\Documents\Visual Studio 2013\Projects\MapperTransfer\LibMapper2\bin\Debug\LibMapper2.pdb
+C:\Users\jog\Documents\Visual Studio 2013\Projects\MapperTransfer\LibMapper2\obj\Debug\LibMapper2.dll
+C:\Users\jog\Documents\Visual Studio 2013\Projects\MapperTransfer\LibMapper2\obj\Debug\LibMapper2.pdb
